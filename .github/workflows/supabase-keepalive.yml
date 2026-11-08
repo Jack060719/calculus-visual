@@ -1,0 +1,28 @@
+# 每 3 天查一次排行榜資料表，讓 Supabase 免費專案不會因閒置被暫停
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 2 */3 * *"   # UTC 02:17，台灣時間 10:17，每 3 天一次
+  workflow_dispatch:          # 可在 Actions 頁手動執行
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query challenge_results
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "缺少 SUPABASE_URL 或 SUPABASE_KEY secret"; exit 1
+          fi
+          code=$(curl -s -o body.txt -w "%{http_code}" \
+            "$SUPABASE_URL/rest/v1/challenge_results?select=id&limit=1" \
+            -H "apikey: $SUPABASE_KEY")
+          echo "HTTP $code"; cat body.txt; echo
+          if [ "$code" != "200" ]; then
+            echo "Supabase 回應異常，專案可能已暫停，請到後台按 Resume project"; exit 1
+          fi
