@@ -76,8 +76,9 @@
     var cid = Array.from(crypto.getRandomValues(new Uint8Array(8)), function (value) {
       return alphabet[value % alphabet.length];
     }).join('');
-    var url = link({ v: 2, cid: cid, name: options.name, topic: options.topic, difficulty: difficulty, seed: options.seed,
-      score: options.summary.total, perQ: options.summary.perQ });
+    var payload = { v: 2, cid: cid, name: options.name, topic: options.topic, difficulty: difficulty, seed: options.seed,
+      score: options.summary.total, perQ: options.summary.perQ };
+    var url = link(payload);
     var card = node('article', 'card challenge-card');
     card.appendChild(node('span', 'badge', '連結挑戰'));
     card.appendChild(node('h1', '', '換朋友來挑戰'));
@@ -85,8 +86,10 @@
     card.appendChild(node('strong', 'challenge-score', options.summary.total + ' 分'));
     card.appendChild(node('p', 'challenge-meta', Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[difficulty] + '・8 題'));
     card.appendChild(node('p', '', '分享連結，朋友就能用同一組題目挑戰你的分數。'));
-    var anchor = node('a', 'challenge-link', url);
-    anchor.href = url;
+    var codeInfo = node('div', 'challenge-code-info');
+    codeInfo.setAttribute('aria-live', 'polite');
+    card.appendChild(codeInfo);
+    var anchor = node('a', 'challenge-link', '產生挑戰碼中…');
     anchor.setAttribute('aria-label', '開啟挑戰連結');
     card.appendChild(anchor);
     var fallback = node('textarea', 'input challenge-copy');
@@ -107,6 +110,7 @@
     var actions = node('div', 'challenge-actions');
     var copy = node('button', 'btn primary', '複製連結');
     copy.type = 'button';
+    copy.disabled = true;
     copy.addEventListener('click', async function () {
       try {
         await navigator.clipboard.writeText(url);
@@ -119,6 +123,7 @@
     if (typeof navigator.share === 'function') {
       var share = node('button', 'btn ghost', '分享');
       share.type = 'button';
+      share.disabled = true;
       share.addEventListener('click', async function () {
         try {
           await navigator.share({ title: '微積分 PK 連結挑戰', url: url });
@@ -136,24 +141,60 @@
     var mounted = leaderboard = Calc.leaderboard.mount(board, cid);
     Calc.leaderboard.submit({ challengeId: cid, name: options.name, score: options.summary.total,
       correct: options.summary.correct }).then(function () { mounted.refresh(); });
+    Calc.leaderboard.createCode(payload).then(function (code) {
+      if (code) {
+        url = window.location.href.split('#')[0] + '#challenge=' + code;
+        codeInfo.appendChild(node('strong', 'challenge-code', '挑戰碼 ' + code));
+        codeInfo.appendChild(node('p', 'challenge-meta', '朋友在首頁「加入挑戰」輸入即可'));
+        var records = Calc.store.get('myChallenges', []);
+        records.unshift({ code: code, topic: options.topic, difficulty: difficulty, score: options.summary.total, at: Date.now() });
+        Calc.store.set('myChallenges', records.slice(0, 5));
+      } else {
+        codeInfo.appendChild(node('p', 'challenge-meta', '挑戰碼暫時無法產生，請改用連結分享'));
+      }
+      anchor.href = url;
+      anchor.textContent = url;
+      fallback.value = url;
+      copy.disabled = false;
+      if (share) share.disabled = false;
+    });
   }
 
   Calc.challenge = { encode: encode, decode: decode, link: link, offer: offer };
   Calc.pages.challenge = {
-    mount: function (el, param) {
+    mount: async function (el, param) {
       stopLeaderboard();
       var current = ++session;
-      var payload = decode(param);
       var card = node('article', 'card challenge-card');
       card.appendChild(node('span', 'badge', '連結挑戰'));
+      var isCode = /^[0-9]{6}$/.test(param);
+      var payload;
+      var errorMessage = '這個挑戰連結無效或已損壞';
+      if (isCode) {
+        var loading = node('p', '', '讀取挑戰中…');
+        loading.setAttribute('role', 'status');
+        card.appendChild(loading);
+        el.replaceChildren(card);
+        var resolved = await Calc.leaderboard.resolveCode(param);
+        if (current !== session) return;
+        loading.remove();
+        if (resolved === 'error') errorMessage = '暫時無法讀取挑戰，請稍後再試';
+        else if (resolved === null) errorMessage = '找不到這個挑戰碼，請確認號碼是否正確';
+        else payload = decode(encode(resolved));
+      } else {
+        payload = decode(param);
+      }
       if (!payload) {
-        card.appendChild(node('h1', '', '這個挑戰連結無效或已損壞'));
+        card.appendChild(node('h1', '', errorMessage));
         card.appendChild(node('p', '', '請朋友重新傳送完整連結，或先回首頁練習。'));
         card.appendChild(homeLink());
         el.replaceChildren(card);
         return;
       }
       var cid = payload.v === 2 && payload.cid ? payload.cid : payload.topic + '-' + payload.seed;
+      if (isCode && Calc.store.get('myChallenges', []).some(function (record) { return record.code === param; })) {
+        card.appendChild(node('span', 'badge', '你發起的挑戰'));
+      }
       card.appendChild(node('h1', '', payload.name + ' 挑戰你：' + payload.score + ' 分'));
       card.appendChild(node('p', 'challenge-meta', Calc.quiz.LABELS[payload.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[payload.difficulty] + '・題數 8'));
       card.appendChild(node('p', '', '同一組題目，比比誰的分數高！同分即平手。'));

@@ -254,3 +254,13 @@ h2 { font-size: 20px; line-height: 1.5; }
 .leaderboard-table .is-me { background: color-mix(in srgb, var(--me) 10%, var(--surface)); color: var(--me); font-weight: 700; }
 .leaderboard-status { color: var(--ink-soft); font-size: 14px; overflow-wrap: anywhere; }
 .leaderboard-status:empty { display: none; }
+
+/* === T11 挑戰碼 === */
+
+.challenge-code-info, .my-challenges { display: grid; gap: 12px; min-width: 0; }
+.challenge-code { color: var(--primary-ink); font: 600 clamp(24px, 7vw, 32px)/1.5 var(--font-mono); overflow-wrap: anywhere; }
+.challenge-actions .btn:disabled { cursor: default; opacity: 0.55; }
+.my-challenges-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.my-challenge { display: grid; gap: 4px; min-width: 0; min-height: 48px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow-wrap: anywhere; }
+.my-challenge-code { color: var(--primary-ink); font: 600 24px/1.5 var(--font-mono); }
+.my-challenge span { color: var(--ink-soft); font-size: 14px; }

@@ -19,6 +19,30 @@
   }
 
   Calc.leaderboard = {
+    createCode: async function (payload) {
+      try {
+        for (var attempt = 0; attempt < 5; attempt++) {
+          var code = String(100000 + crypto.getRandomValues(new Uint32Array(1))[0] % 900000);
+          var response = await Calc.realtime.client().from('challenges').insert({ code: code, payload: payload });
+          if (!response.error) return code;
+          if (response.error.code !== '23505') return null;
+        }
+      } catch (error) {
+        return null;
+      }
+      return null;
+    },
+    resolveCode: async function (code) {
+      try {
+        if (!navigator.onLine) return 'error';
+        var response = await Calc.realtime.client().from('challenges')
+          .select('payload').eq('code', code).maybeSingle();
+        if (response.error) return 'error';
+        return response.data ? response.data.payload : null;
+      } catch (error) {
+        return 'error';
+      }
+    },
     submit: async function (result) {
       try {
         var response = await Calc.realtime.client().from('challenge_results').insert({

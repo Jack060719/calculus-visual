@@ -18,11 +18,17 @@
         '<div><h2>建立 PK 房間</h2><p>邀一位朋友，來場腦力切磋。</p></div></div>' +
         '<a class="btn ghost" href="#room=new">建立房間</a></article>' +
         '<article class="card mode"><div class="mode-heading"><span class="mode-number">03</span>' +
-        '<div><h2>加入房間</h2><p>朋友準備好了？輸入房號就出發。</p></div></div>' +
+        '<div><h2>加入房間</h2><p>輸入 4 位數房號，與朋友即時對戰。</p></div></div>' +
         '<form id="join-room" novalidate><label class="field-label" for="room">4 位數房號</label>' +
         '<div class="room-controls"><input class="input" id="room" type="text" inputmode="numeric" pattern="[0-9]{4}" placeholder="例如 1234" autocomplete="off" aria-describedby="room-error">' +
         '<button class="btn ghost" type="submit">加入</button></div>' +
-        '<div class="room-error" id="room-error" role="status" aria-live="polite"></div></form></article></div>' +
+        '<div class="room-error" id="room-error" role="status" aria-live="polite"></div></form></article>' +
+        '<article class="card mode"><div class="mode-heading"><span class="mode-number">04</span>' +
+        '<div><h2>加入挑戰</h2><p>輸入 6 位數挑戰碼，隨時挑戰朋友的成績。</p></div></div>' +
+        '<form id="join-challenge" novalidate><label class="field-label" for="challenge-code">6 位數挑戰碼</label>' +
+        '<div class="room-controls"><input class="input" id="challenge-code" type="text" inputmode="numeric" pattern="[0-9]{6}" placeholder="例如 482913" autocomplete="off" aria-describedby="challenge-code-error">' +
+        '<button class="btn ghost" type="submit">加入</button></div>' +
+        '<div class="room-error" id="challenge-code-error" role="status" aria-live="polite"></div></form></article></div>' +
         '<p class="footnote">「連結挑戰」會在單人練習結算後產生。</p>';
 
       var nameInput = el.querySelector('#name');
@@ -97,6 +103,51 @@
         }
         Calc.router.go('#room=' + roomInput.value);
       });
+
+      var codeInput = el.querySelector('#challenge-code');
+      var codeError = el.querySelector('#challenge-code-error');
+      codeInput.addEventListener('input', function () {
+        codeInput.removeAttribute('aria-invalid');
+        codeError.textContent = '';
+      });
+      el.querySelector('#join-challenge').addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!/^[0-9]{6}$/.test(codeInput.value)) {
+          codeInput.setAttribute('aria-invalid', 'true');
+          codeError.textContent = '請輸入 6 位數字的挑戰碼';
+          codeInput.focus();
+          return;
+        }
+        Calc.router.go('#challenge=' + codeInput.value);
+      });
+
+      var records = Calc.store.get('myChallenges', []);
+      if (records.length) {
+        var section = document.createElement('section');
+        section.className = 'card my-challenges';
+        var heading = document.createElement('h2');
+        heading.textContent = '我發起的挑戰';
+        var list = document.createElement('ul');
+        list.className = 'my-challenges-list';
+        records.forEach(function (record) {
+          var item = document.createElement('li');
+          var link = document.createElement('a');
+          link.className = 'my-challenge';
+          link.href = '#challenge=' + record.code;
+          var code = document.createElement('strong');
+          code.className = 'my-challenge-code';
+          code.textContent = record.code;
+          var meta = document.createElement('span');
+          meta.textContent = Calc.quiz.LABELS[record.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[record.difficulty];
+          var score = document.createElement('span');
+          score.textContent = '我的分數：' + record.score + ' 分';
+          link.append(code, meta, score);
+          item.appendChild(link);
+          list.appendChild(item);
+        });
+        section.append(heading, list);
+        el.appendChild(section);
+      }
     },
     unmount: function () {}
   };
