@@ -115,10 +115,11 @@
         heading.append(plate, score);
         var track = node('div', 'fx-score-track');
         track.setAttribute('role', 'progressbar');
-        track.setAttribute('aria-label', name.textContent + '的分數');
+        track.setAttribute('aria-label', name.textContent + ' 的分數');
         track.setAttribute('aria-valuemin', '0');
         track.setAttribute('aria-valuemax', options.max);
         track.setAttribute('aria-valuenow', '0');
+        track.setAttribute('aria-valuetext', '0 分');
         var fill = node('div', 'fx-score-fill');
         fill.style.transform = 'scaleX(0)';
         track.appendChild(fill);
@@ -137,6 +138,7 @@
           var row = rows[i === 0 ? 'me' : 'opp'];
           row.fill.style.transform = 'scaleX(' + Math.max(0, Math.min(1, value / options.max)) + ')';
           row.track.setAttribute('aria-valuenow', value);
+          row.track.setAttribute('aria-valuetext', value + ' 分');
           row.leader.hidden = value <= values[1 - i];
           row.row.classList.toggle('is-leading', !row.leader.hidden);
         });

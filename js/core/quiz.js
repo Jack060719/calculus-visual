@@ -1,25 +1,57 @@
 (function (root) {
   var Calc = root.Calc = root.Calc || {};
-  var TOPICS = ['limit', 'derivative', 'integral', 'series', 'mixed'];
+  var TOPICS = ['limit', 'derivative', 'derivative-app', 'integral', 'integral-tech', 'series', 'mixed'];
+  var LABELS = { limit: '極限與連續', derivative: '導數', 'derivative-app': '導數應用', integral: '積分', 'integral-tech': '積分技巧', series: '級數與泰勒', mixed: '綜合' };
+  var DIFFICULTIES = [1, 2, 3, 'mixed'];
+  var DIFFICULTY_LABELS = { 1: '初級', 2: '中級', 3: '高級', mixed: '混合' };
   var LIMIT_MS = 20000;
   var COUNT = 8;
-  var labels = { limit: '極限與連續', derivative: '導數', integral: '積分', series: '級數', mixed: '綜合' };
 
-  function build(topic, seed, count) {
+  function build(topic, seed, count, difficulty) {
     if (count === undefined) count = COUNT;
-    var rng = Calc.rng.create(seed, topic);
+    if (difficulty === undefined) difficulty = 'mixed';
+    var rng = Calc.rng.create(seed, topic + '|' + difficulty);
     var bank = Calc.questions.slice().sort(function (a, b) {
       return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
     });
-    var selected;
-    if (topic === 'mixed') {
-      selected = [];
-      TOPICS.slice(0, 4).forEach(function (name) {
-        selected = selected.concat(rng.shuffle(bank.filter(function (q) { return q.topic === name; })).slice(0, 2));
+    var topics = rng.shuffle(TOPICS.slice(0, 6));
+    var levels = [];
+    for (var i = 0; i < count; i++) {
+      levels.push(difficulty === 'mixed' ? (i < Math.ceil(count * 3 / 8) ? 1 : i < Math.ceil(count * 6 / 8) ? 2 : 3) : difficulty);
+    }
+    levels = rng.shuffle(levels);
+    var slots = levels.map(function (level, index) {
+      return { topic: topic === 'mixed' ? topics[index % topics.length] : topic, difficulty: level, question: null };
+    });
+    var used = Object.create(null);
+
+    function take(slot, sameTopic, level) {
+      var candidates = bank.filter(function (q) {
+        return !used[q.id] && (!sameTopic || q.topic === slot.topic) && q.difficulty === level;
       });
-      selected = rng.shuffle(selected);
-    } else {
-      selected = rng.shuffle(bank.filter(function (q) { return q.topic === topic; })).slice(0, count);
+      var question = rng.shuffle(candidates)[0];
+      if (question) {
+        slot.question = question;
+        used[question.id] = true;
+      }
+    }
+
+    // 先保留各名額的精確配對，避免補題搶走其他主題的名額。
+    slots.forEach(function (slot) { take(slot, true, slot.difficulty); });
+    [true, false].forEach(function (sameTopic) {
+      slots.forEach(function (slot) {
+        var adjacent = slot.difficulty === 1 ? [1, 2, 3] : slot.difficulty === 2 ? [2, 1, 3] : [3, 2, 1];
+        adjacent.forEach(function (level) {
+          if (!slot.question) take(slot, sameTopic, level);
+        });
+      });
+    });
+    var selected = rng.shuffle(slots.map(function (slot) { return slot.question; }).filter(Boolean));
+    if (difficulty === 'mixed') {
+      // 分組串接保留同難度內的洗牌順序，不依賴排序的穩定性。
+      selected = [1, 2, 3].reduce(function (all, level) {
+        return all.concat(selected.filter(function (q) { return q.difficulty === level; }));
+      }, []);
     }
     return selected.map(function (q) {
       var order = rng.shuffle([0, 1, 2, 3]);
@@ -72,7 +104,7 @@
     el.replaceChildren(wrapper);
     var index = -1;
     var records = [];
-    var card, buttons, status, timer, fill, seconds;
+    var card, buttons, status, timer, fill, seconds, displayedSeconds;
     var startedAt, frame, deadline, advance;
     var locked = false;
     var revealed = false;
@@ -85,11 +117,18 @@
       root.clearTimeout(advance);
     }
 
+    function updateSeconds(value) {
+      if (value === displayedSeconds) return;
+      displayedSeconds = value;
+      seconds.textContent = value + ' 秒';
+      timer.setAttribute('aria-label', '剩餘時間 ' + value + ' 秒');
+    }
+
     function tick() {
       if (destroyed || locked) return;
       var remaining = Math.max(0, LIMIT_MS - (root.performance.now() - startedAt));
       fill.style.transform = 'scaleX(' + remaining / LIMIT_MS + ')';
-      seconds.textContent = Math.ceil(remaining / 1000) + ' 秒';
+      updateSeconds(Math.ceil(remaining / 1000));
       timer.classList.toggle('is-low', remaining <= 5000);
       if (!remaining) answer(null);
       else frame = root.requestAnimationFrame(tick);
@@ -110,7 +149,7 @@
       if (choice !== null) buttons[choice].classList.add('is-selected');
       if (timeout) {
         fill.style.transform = 'scaleX(0)';
-        seconds.textContent = '0 秒';
+        updateSeconds(0);
         timer.classList.add('is-low');
       }
       status.textContent = '等待對手…';
@@ -124,12 +163,19 @@
       var q = questions[index];
       var rec = records[index];
       buttons[q.answer].classList.add('is-correct');
-      buttons[q.answer].appendChild(node('span', 'choice-mark', '正確答案'));
-      if (rec.choice !== null) buttons[rec.choice].appendChild(node('span', 'choice-mark', '你的選擇'));
-      status.textContent = rec.timeout ? '時間到，本題 0 分' : rec.correct ? '答對了！得到 ' + rec.score + ' 分' : '答錯了，本題 0 分';
+      buttons[q.answer].appendChild(node('span', 'choice-mark', '✓ 正確答案'));
+      if (rec.choice !== null && !rec.correct) {
+        buttons[rec.choice].classList.add('is-wrong');
+        buttons[rec.choice].appendChild(node('span', 'choice-mark', '✕ 你的選擇'));
+      }
+      buttons.forEach(function (button, i) {
+        button.classList.toggle('is-muted', i !== q.answer && i !== rec.choice);
+      });
+      status.textContent = rec.timeout ? '⏱ 時間到，本題 0 分' : rec.correct ? '✓ 答對了，得到 ' + rec.score + ' 分' : '✕ 答錯了，本題 0 分';
       Calc.fx.feedback(card, rec.timeout ? 'timeout' : rec.correct ? 'correct' : 'wrong');
       if (options.mode === 'solo') {
-        advance = root.setTimeout(next, root.matchMedia('(prefers-reduced-motion: reduce)').matches ? 400 : 900);
+        var reduced = root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        advance = root.setTimeout(next, rec.correct ? (reduced ? 400 : 900) : (reduced ? 700 : 1500));
       }
     }
 
@@ -159,9 +205,12 @@
       card = node('article', 'card quiz-card');
       var meta = node('div', 'quiz-meta');
       meta.appendChild(node('span', '', '第 ' + (index + 1) + ' / ' + questions.length + ' 題'));
-      meta.appendChild(node('span', 'badge', labels[questions[index].topic]));
+      meta.appendChild(node('span', 'badge', LABELS[questions[index].topic]));
       card.appendChild(meta);
       timer = node('div', 'timer');
+      timer.setAttribute('role', 'timer');
+      timer.setAttribute('aria-label', '剩餘時間 20 秒');
+      displayedSeconds = 20;
       seconds = node('span', 'timer-seconds', '20 秒');
       var track = node('div', 'timer-track');
       fill = node('div', 'timer-fill');
@@ -175,7 +224,11 @@
       buttons = questions[index].choices.map(function (tex, i) {
         var button = node('button', 'quiz-choice');
         button.type = 'button';
-        button.appendChild(node('span', 'choice-letter', String.fromCharCode(65 + i)));
+        var letter = String.fromCharCode(65 + i);
+        button.appendChild(node('span', 'visually-hidden', '選項 ' + letter + '：'));
+        var badge = node('span', 'choice-letter', letter);
+        badge.setAttribute('aria-hidden', 'true');
+        button.appendChild(badge);
         var content = node('span', 'choice-content');
         math(content, '$' + tex + '$');
         button.appendChild(content);
@@ -205,6 +258,6 @@
     };
   }
 
-  Calc.quiz = { TOPICS: TOPICS, LIMIT_MS: LIMIT_MS, COUNT: COUNT, build: build, score: score, compare: compare, play: play };
-  if (typeof module !== 'undefined') module.exports = { TOPICS: TOPICS, LIMIT_MS: LIMIT_MS, COUNT: COUNT, build: build, score: score, compare: compare };
+  Calc.quiz = { TOPICS: TOPICS, LABELS: LABELS, DIFFICULTIES: DIFFICULTIES, DIFFICULTY_LABELS: DIFFICULTY_LABELS, LIMIT_MS: LIMIT_MS, COUNT: COUNT, build: build, score: score, compare: compare, play: play };
+  if (typeof module !== 'undefined') module.exports = Calc.quiz;
 }(typeof window !== 'undefined' ? window : globalThis));

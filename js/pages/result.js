@@ -1,6 +1,4 @@
 (function () {
-  var labels = { limit: '極限與連續', derivative: '導數', integral: '積分', series: '級數', mixed: '綜合' };
-
   function node(tag, className, text) {
     var el = document.createElement(tag);
     if (className) el.className = className;
@@ -37,7 +35,7 @@
     var opp = options.opp;
     var summary = me.summary;
     var card = node('article', 'card result-card');
-    card.appendChild(node('span', 'badge', labels[options.topic] + '・' + (opp ? '對戰結算' : '練習結算')));
+    card.appendChild(node('span', 'badge', Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[options.difficulty === undefined ? 'mixed' : options.difficulty]));
     card.appendChild(node('h1', '', '這一局的收穫'));
     var verdict = node('div', 'result-verdict');
     verdict.setAttribute('role', 'status');
@@ -109,6 +107,7 @@
       updateToggle();
       card.appendChild(review);
     }
+    if (options.extra) card.appendChild(options.extra);
     var actions = node('div', 'result-actions');
     (options.actions || []).forEach(function (action) {
       var button = node('button', 'btn ' + (action.primary ? 'primary' : 'ghost'), action.label);

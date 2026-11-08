@@ -4,6 +4,10 @@
   var announced = false;
 
   Calc.realtime = {
+    client: function () {
+      if (!client) client = window.supabase.createClient(Calc.config.SUPABASE_URL, Calc.config.SUPABASE_ANON_KEY);
+      return client;
+    },
     join: async function (code, options) {
       await removing;
       var remote = !!(Calc.config.SUPABASE_URL && Calc.config.SUPABASE_ANON_KEY);

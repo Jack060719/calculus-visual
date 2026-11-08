@@ -8,7 +8,9 @@
         '<div class="field"><label class="field-label" for="name">你的暱稱<span>最多 12 字</span></label>' +
         '<input class="input" id="name" maxlength="12" placeholder="讓朋友認出你" autocomplete="nickname"></div>' +
         '<div class="field"><p class="field-label" id="topic-label">這次想練什麼？</p>' +
-        '<div class="topics" role="group" aria-labelledby="topic-label"></div></div></section>' +
+        '<div class="topics topic-grid" role="group" aria-labelledby="topic-label"></div></div>' +
+        '<div class="field"><p class="field-label" id="difficulty-label">選擇難度</p>' +
+        '<div class="difficulties" role="group" aria-labelledby="difficulty-label"></div></div></section>' +
         '<div class="modes"><article class="card mode featured">' +
         '<div class="mode-heading"><span class="mode-number">01</span><div><h2>單人練習</h2><p>照自己的步調，累積解題手感。</p></div></div>' +
         '<a class="btn primary" href="#solo">開始練習</a></article>' +
@@ -30,26 +32,53 @@
         Calc.store.set('name', nameInput.value);
       });
 
-      var topics = [
-        ['limit', '極限與連續'], ['derivative', '導數'], ['integral', '積分'],
-        ['series', '級數'], ['mixed', '綜合']
-      ];
+      var descriptions = {
+        limit: '從趨近的變化，掌握連續的條件。',
+        derivative: '練習變化率與微分的基本功。',
+        'derivative-app': '用導數找切線、極值與變化趨勢。',
+        integral: '從累積量出發，理解積分。',
+        'integral-tech': '運用代換與分部積分解題。',
+        series: '探索無窮和與函數的展開。',
+        mixed: '交錯練習六個主題，串起觀念。'
+      };
       var selected = Calc.store.get('topic', 'mixed');
-      if (!topics.some(function (topic) { return topic[0] === selected; })) selected = 'mixed';
+      if (Calc.quiz.TOPICS.indexOf(selected) === -1) selected = 'mixed';
       var topicGroup = el.querySelector('.topics');
-      topics.forEach(function (topic) {
+      Calc.quiz.TOPICS.forEach(function (topic) {
         var chip = document.createElement('button');
         chip.type = 'button';
-        chip.className = 'chip';
-        chip.textContent = topic[1];
-        chip.setAttribute('aria-pressed', String(topic[0] === selected));
+        chip.className = 'chip topic-chip';
+        var title = document.createElement('strong');
+        title.textContent = Calc.quiz.LABELS[topic];
+        var description = document.createElement('span');
+        description.textContent = descriptions[topic];
+        chip.append(title, description);
+        chip.setAttribute('aria-pressed', String(topic === selected));
         chip.addEventListener('click', function () {
-          Calc.store.set('topic', topic[0]);
+          Calc.store.set('topic', topic);
           topicGroup.querySelectorAll('.chip').forEach(function (item) {
             item.setAttribute('aria-pressed', String(item === chip));
           });
         });
         topicGroup.appendChild(chip);
+      });
+
+      var difficulty = Calc.store.get('difficulty', 'mixed');
+      if (Calc.quiz.DIFFICULTIES.indexOf(difficulty) === -1) difficulty = 'mixed';
+      var difficultyGroup = el.querySelector('.difficulties');
+      Calc.quiz.DIFFICULTIES.forEach(function (level) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip';
+        chip.textContent = Calc.quiz.DIFFICULTY_LABELS[level];
+        chip.setAttribute('aria-pressed', String(level === difficulty));
+        chip.addEventListener('click', function () {
+          Calc.store.set('difficulty', level);
+          difficultyGroup.querySelectorAll('.chip').forEach(function (item) {
+            item.setAttribute('aria-pressed', String(item === chip));
+          });
+        });
+        difficultyGroup.appendChild(chip);
       });
 
       var roomInput = el.querySelector('#room');

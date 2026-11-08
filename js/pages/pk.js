@@ -1,6 +1,5 @@
 (function () {
   var cleanup = function () {};
-  var labels = { limit: '極限與連續', derivative: '導數', integral: '積分', series: '級數', mixed: '綜合' };
 
   function node(tag, className, text) {
     var el = document.createElement(tag);
@@ -24,7 +23,10 @@
         : Array.from(window.crypto.getRandomValues(new Uint32Array(4)), function (n) { return n.toString(16); }).join('-');
       var name = String(Calc.store.get('name', '')).trim().slice(0, 12) || '同學';
       var topic = Calc.store.get('topic', 'mixed');
-      if (!labels[topic]) topic = 'mixed';
+      if (Calc.quiz.TOPICS.indexOf(topic) === -1) topic = 'mixed';
+      var difficulty = Calc.store.get('difficulty', 'mixed');
+      if (Calc.quiz.DIFFICULTIES.indexOf(difficulty) === -1) difficulty = 'mixed';
+      var lobbyReceived = false;
       var role = param === 'new' ? 'host' : 'guest';
       var code = param;
       var lobby, status, startButton, badges, topicLabel;
@@ -103,14 +105,14 @@
           if (player) badge.appendChild(node('small', '', player.role === 'host' ? '房主' : '挑戰者'));
           badges.appendChild(badge);
         });
-        topicLabel.textContent = '對戰主題：' + (role === 'host' || opponent ? labels[topic] : '等待房主');
+        topicLabel.textContent = '對戰主題：' + (role === 'host' || lobbyReceived ? Calc.quiz.LABELS[topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[difficulty] : '等待房主');
         status.textContent = !opponent ? '等待對手加入…' : role === 'host' ? '對手已就緒，可以開始！' : '等待房主開始';
         startButton.disabled = role !== 'host' || !opponent || participants.length < 2;
       }
 
       function startData() {
         var sentAt = Date.now();
-        return { seed: Calc.rng.newSeed(), topic: topic, startAt: sentAt + 4000, sentAt: sentAt };
+        return { seed: Calc.rng.newSeed(), topic: topic, difficulty: difficulty, startAt: sentAt + 4000, sentAt: sentAt };
       }
 
       function launch(type) {
@@ -200,10 +202,11 @@
       }
 
       async function begin(data) {
-        if (!opponent || !labels[data.topic] || (phase !== 'lobby' && phase !== 'result')) return;
+        if (!opponent || Calc.quiz.TOPICS.indexOf(data.topic) === -1 || Calc.quiz.DIFFICULTIES.indexOf(data.difficulty) === -1 || (phase !== 'lobby' && phase !== 'result')) return;
         var target = Date.now() + (data.startAt - data.sentAt);
         var thisRound = ++round;
         topic = data.topic;
+        difficulty = data.difficulty;
         phase = 'countdown';
         clearTimers();
         if (game) game.destroy();
@@ -213,7 +216,7 @@
         later(function () {
           if (round !== thisRound || phase !== 'countdown') return;
           phase = 'playing';
-          var questions = Calc.quiz.build(topic, data.seed);
+          var questions = Calc.quiz.build(topic, data.seed, 8, difficulty);
           game = Calc.quiz.play(el, {
             questions: questions,
             mode: 'pk',
@@ -232,7 +235,7 @@
                 totalMs: theirs.reduce(function (sum, rec) { return sum + rec.ms; }, 0)
               };
               Calc.pages.result.render(el, {
-                topic: topic, me: { name: name, summary: summary }, opp: { name: opponent.name, summary: oppSummary },
+                topic: topic, difficulty: difficulty, me: { name: name, summary: summary }, opp: { name: opponent.name, summary: oppSummary },
                 actions: [
                   { label: '再來一局', primary: true, onClick: function () {
                     if (role === 'host') launch('rematch');
@@ -267,8 +270,10 @@
         if (role === 'host') Calc.router.replace('#room=' + code);
         showLobby();
         room.on('lobby', function (data, sender) {
-          if (phase === 'lobby' && opponent && sender === opponent.clientId && opponent.role === 'host' && labels[data.topic]) {
+          if (phase === 'lobby' && opponent && sender === opponent.clientId && opponent.role === 'host' && Calc.quiz.TOPICS.indexOf(data.topic) !== -1 && Calc.quiz.DIFFICULTIES.indexOf(data.difficulty) !== -1) {
             topic = data.topic;
+            difficulty = data.difficulty;
+            lobbyReceived = true;
             updateLobby();
           }
         });
@@ -304,7 +309,7 @@
           participants = active;
           opponent = active.find(function (player) { return player.clientId !== clientId; });
           updateLobby();
-          if (role === 'host' && opponent) room.send('lobby', { topic: topic });
+          if (role === 'host' && opponent) room.send('lobby', { topic: topic, difficulty: difficulty });
         });
       } catch (error) {
         if (!disposed) errorCard(error.message);

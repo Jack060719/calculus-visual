@@ -1,7 +1,12 @@
 (function () {
-  var labels = { limit: '極限與連續', derivative: '導數', integral: '積分', series: '級數', mixed: '綜合' };
   var game;
   var session = 0;
+  var leaderboard;
+
+  function stopLeaderboard() {
+    if (leaderboard) leaderboard.destroy();
+    leaderboard = null;
+  }
 
   function node(tag, className, text) {
     var el = document.createElement(tag);
@@ -25,7 +30,10 @@
       if (canonical !== str) return null;
       var bytes = Uint8Array.from(binary, function (value) { return value.charCodeAt(0); });
       var payload = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
-      if (!payload || payload.v !== 1 || Calc.quiz.TOPICS.indexOf(payload.topic) === -1) return null;
+      if (!payload || (payload.v !== 1 && payload.v !== 2) || Calc.quiz.TOPICS.indexOf(payload.topic) === -1) return null;
+      if (payload.v === 1) payload.difficulty = 'mixed';
+      if (Calc.quiz.DIFFICULTIES.indexOf(payload.difficulty) === -1) return null;
+      if (payload.v === 2 && payload.cid !== undefined && (typeof payload.cid !== 'string' || !/^[A-Za-z0-9]{8}$/.test(payload.cid))) return null;
       if (!Number.isInteger(payload.seed) || payload.seed < 0 || payload.seed >= 4294967296) return null;
       if (!Array.isArray(payload.perQ) || payload.perQ.length !== 8 || !payload.perQ.every(function (value) {
         return Number.isInteger(value) && value >= 0 && value <= 200;
@@ -44,24 +52,42 @@
     return window.location.href.split('#')[0] + '#challenge=' + encode(payload);
   }
 
+  function goHome() {
+    // 結算已把網址換成 #home，先清空才會觸發首頁路由。
+    if (window.location.hash === '#home') Calc.router.replace('#');
+    Calc.router.go('#home');
+  }
+
   function homeLink() {
     var home = node('a', 'btn ghost', '回首頁');
     home.href = '#home';
+    home.addEventListener('click', function (event) {
+      if (window.location.hash !== '#home') return;
+      event.preventDefault();
+      goHome();
+    });
     return home;
   }
 
   function offer(el, options) {
-    var url = link({ v: 1, name: options.name, topic: options.topic, seed: options.seed,
+    stopLeaderboard();
+    var difficulty = options.difficulty === undefined ? 'mixed' : options.difficulty;
+    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var cid = Array.from(crypto.getRandomValues(new Uint8Array(8)), function (value) {
+      return alphabet[value % alphabet.length];
+    }).join('');
+    var url = link({ v: 2, cid: cid, name: options.name, topic: options.topic, difficulty: difficulty, seed: options.seed,
       score: options.summary.total, perQ: options.summary.perQ });
     var card = node('article', 'card challenge-card');
     card.appendChild(node('span', 'badge', '連結挑戰'));
     card.appendChild(node('h1', '', '換朋友來挑戰'));
     card.appendChild(node('p', 'challenge-name', options.name));
     card.appendChild(node('strong', 'challenge-score', options.summary.total + ' 分'));
-    card.appendChild(node('p', 'challenge-meta', labels[options.topic] + '・8 題'));
+    card.appendChild(node('p', 'challenge-meta', Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[difficulty] + '・8 題'));
     card.appendChild(node('p', '', '分享連結，朋友就能用同一組題目挑戰你的分數。'));
     var anchor = node('a', 'challenge-link', url);
     anchor.href = url;
+    anchor.setAttribute('aria-label', '開啟挑戰連結');
     card.appendChild(anchor);
     var fallback = node('textarea', 'input challenge-copy');
     fallback.value = url;
@@ -105,11 +131,17 @@
     actions.appendChild(homeLink());
     card.append(fallback, status, actions);
     el.replaceChildren(card);
+    var board = node('section', 'card');
+    el.appendChild(board);
+    var mounted = leaderboard = Calc.leaderboard.mount(board, cid);
+    Calc.leaderboard.submit({ challengeId: cid, name: options.name, score: options.summary.total,
+      correct: options.summary.correct }).then(function () { mounted.refresh(); });
   }
 
   Calc.challenge = { encode: encode, decode: decode, link: link, offer: offer };
   Calc.pages.challenge = {
     mount: function (el, param) {
+      stopLeaderboard();
       var current = ++session;
       var payload = decode(param);
       var card = node('article', 'card challenge-card');
@@ -121,8 +153,9 @@
         el.replaceChildren(card);
         return;
       }
+      var cid = payload.v === 2 && payload.cid ? payload.cid : payload.topic + '-' + payload.seed;
       card.appendChild(node('h1', '', payload.name + ' 挑戰你：' + payload.score + ' 分'));
-      card.appendChild(node('p', 'challenge-meta', labels[payload.topic] + '・題數 8'));
+      card.appendChild(node('p', 'challenge-meta', Calc.quiz.LABELS[payload.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[payload.difficulty] + '・題數 8'));
       card.appendChild(node('p', '', '同一組題目，比比誰的分數高！同分即平手。'));
       var form = node('form', 'challenge-form');
       var field = node('div', 'field');
@@ -144,32 +177,51 @@
         accept.disabled = true;
         var name = input.value.trim() || '挑戰者';
         Calc.store.set('name', name);
+        stopLeaderboard();
         await Calc.fx.countdown(el);
         if (current !== session) return;
         game = Calc.quiz.play(el, {
-          questions: Calc.quiz.build(payload.topic, payload.seed),
+          questions: Calc.quiz.build(payload.topic, payload.seed, 8, payload.difficulty),
           mode: 'solo',
           onFinish: function (summary) {
+            Calc.router.replace('#home');
+            var extra = node('section');
+            var board = node('div');
+            var notice = node('p', 'leaderboard-status');
+            notice.setAttribute('role', 'status');
+            extra.append(board, notice);
             Calc.pages.result.render(el, {
               topic: payload.topic,
+              difficulty: payload.difficulty,
               me: { name: name, summary: summary },
               opp: { name: payload.name, summary: { total: payload.score, perQ: payload.perQ } },
+              extra: extra,
               actions: [
                 { label: '回嗆', primary: true, onClick: function () {
-                  offer(el, { name: name, topic: payload.topic, seed: payload.seed, summary: summary });
+                  offer(el, { name: name, topic: payload.topic, difficulty: payload.difficulty, seed: payload.seed, summary: summary });
                 } },
-                { label: '回首頁', onClick: function () { Calc.router.go('#home'); } }
+                { label: '回首頁', onClick: goHome }
               ]
             });
+            var mounted = leaderboard = Calc.leaderboard.mount(board, cid);
+            Calc.leaderboard.submit({ challengeId: cid, name: name, score: summary.total, correct: summary.correct })
+              .then(function (result) {
+                if (result === 'duplicate') notice.textContent = '同一挑戰只計第一次成績';
+                mounted.refresh();
+              });
           }
         });
         game.start();
       });
       card.append(form, homeLink());
       el.replaceChildren(card);
+      var board = node('section', 'card');
+      el.appendChild(board);
+      leaderboard = Calc.leaderboard.mount(board, cid);
     },
     unmount: function () {
       session++;
+      stopLeaderboard();
       if (game) game.destroy();
       game = null;
     }
