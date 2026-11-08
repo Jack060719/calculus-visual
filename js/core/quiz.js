@@ -73,7 +73,7 @@
     var index = -1;
     var records = [];
     var card, buttons, status, timer, fill, seconds;
-    var startedAt, frame, deadline;
+    var startedAt, frame, deadline, advance;
     var locked = false;
     var revealed = false;
     var destroyed = false;
@@ -82,6 +82,7 @@
     function stopTimer() {
       root.cancelAnimationFrame(frame);
       root.clearTimeout(deadline);
+      root.clearTimeout(advance);
     }
 
     function tick() {
@@ -125,17 +126,10 @@
       buttons[q.answer].classList.add('is-correct');
       buttons[q.answer].appendChild(node('span', 'choice-mark', '正確答案'));
       if (rec.choice !== null) buttons[rec.choice].appendChild(node('span', 'choice-mark', '你的選擇'));
-      status.textContent = rec.timeout ? '時間到，本題 0 分' : rec.correct ? '答對了！得到 ' + rec.score + ' 分' : '答錯了，一起看看詳解';
-      var solution = node('div', 'quiz-solution');
-      solution.appendChild(node('h2', '', '詳解'));
-      math(solution, q.solution);
-      card.appendChild(solution);
+      status.textContent = rec.timeout ? '時間到，本題 0 分' : rec.correct ? '答對了！得到 ' + rec.score + ' 分' : '答錯了，本題 0 分';
       Calc.fx.feedback(card, rec.timeout ? 'timeout' : rec.correct ? 'correct' : 'wrong');
       if (options.mode === 'solo') {
-        var button = node('button', 'btn primary quiz-next', index === questions.length - 1 ? '查看結算' : '下一題');
-        button.type = 'button';
-        button.addEventListener('click', next);
-        card.appendChild(button);
+        advance = root.setTimeout(next, root.matchMedia('(prefers-reduced-motion: reduce)').matches ? 400 : 900);
       }
     }
 
@@ -150,6 +144,7 @@
         var summary = {
           total: perQ.reduce(function (sum, value) { return sum + value; }, 0),
           perQ: perQ,
+          choices: records.map(function (rec) { return rec.choice; }),
           correct: records.filter(function (rec) { return rec.correct; }).length,
           ms: ms,
           totalMs: ms.reduce(function (sum, value) { return sum + value; }, 0),

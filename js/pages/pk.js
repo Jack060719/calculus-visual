@@ -185,7 +185,7 @@
           showScores();
           game.next();
           if (phase === 'playing') questionStarted();
-        }, 3000);
+        }, 1200);
       }
 
       function questionStarted() {

@@ -61,22 +61,54 @@
       row.appendChild(questionScore(summary, index, 'me'));
       if (opp) row.appendChild(questionScore(opp.summary, index, 'opp'));
       item.appendChild(row);
-      var question = summary.questions && summary.questions[index];
-      if (question) {
-        var details = node('details', 'result-solution');
-        details.appendChild(node('summary', '', '查看詳解'));
-        var stem = node('p');
-        math(stem, question.stem);
-        var answer = node('p');
-        math(answer, '正確答案：$' + question.choices[question.answer] + '$');
-        var solution = node('p');
-        math(solution, question.solution);
-        details.append(stem, answer, solution);
-        item.appendChild(details);
-      }
       list.appendChild(item);
     });
     card.appendChild(list);
+    if (summary.questions && summary.questions.length) {
+      var review = node('section', 'result-review');
+      review.setAttribute('aria-label', '看詳解');
+      review.appendChild(node('h2', '', '看詳解'));
+      var toggle = node('button', 'btn ghost');
+      toggle.type = 'button';
+      review.appendChild(toggle);
+      var solutions = [];
+
+      function updateToggle() {
+        var allOpen = solutions.every(function (details) { return details.open; });
+        toggle.textContent = allOpen ? '收合全部詳解' : '展開全部詳解';
+        toggle.setAttribute('aria-expanded', String(allOpen));
+      }
+
+      summary.questions.forEach(function (question, index) {
+        var details = node('details', 'result-solution');
+        details.open = summary.perQ[index] === 0;
+        details.appendChild(node('summary', '', '第 ' + (index + 1) + ' 題'));
+        var stem = node('p');
+        math(stem, question.stem);
+        details.appendChild(stem);
+        if (summary.choices) {
+          var choice = summary.choices[index];
+          var mine = node('p', 'result-answer' + (choice !== question.answer ? ' is-wrong' : ' is-correct'));
+          math(mine, '你的答案：' + (choice === null ? '未作答（時間到）' : '$' + question.choices[choice] + '$'));
+          details.appendChild(mine);
+        }
+        var answer = node('p', 'result-answer is-correct');
+        math(answer, '正確答案：$' + question.choices[question.answer] + '$');
+        var solution = node('p');
+        math(solution, question.solution);
+        details.append(answer, solution);
+        details.addEventListener('toggle', updateToggle);
+        solutions.push(details);
+        review.appendChild(details);
+      });
+      toggle.addEventListener('click', function () {
+        var open = !solutions.every(function (details) { return details.open; });
+        solutions.forEach(function (details) { details.open = open; });
+        updateToggle();
+      });
+      updateToggle();
+      card.appendChild(review);
+    }
     var actions = node('div', 'result-actions');
     (options.actions || []).forEach(function (action) {
       var button = node('button', 'btn ' + (action.primary ? 'primary' : 'ghost'), action.label);

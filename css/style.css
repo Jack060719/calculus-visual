@@ -90,12 +90,10 @@ h2 { font-size: 20px; line-height: 1.5; }
 .choice-mark { font-size: 12px; color: var(--primary-ink); }
 .quiz-status { min-height: 27px; font-weight: 700; }
 .quiz-status:empty { display: none; }
-.quiz-solution { display: grid; gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
 .quiz-card.is-correct { border-color: var(--accent); }
 .quiz-card.is-wrong, .quiz-card.is-timeout { border-color: var(--primary); }
-.quiz-next { width: 100%; }
 .quiz .katex, .result-solution .katex { font-size: 1.05em; }
-.quiz-stem .katex, .quiz-solution .katex, .result-solution .katex { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
+.quiz-stem .katex, .result-solution .katex { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
 .fx-countdown { display: grid; min-height: 300px; place-items: center; font: 600 64px var(--font-mono); color: var(--primary-ink); }
 .fx-score-row { display: grid; gap: 6px; min-width: 0; margin-bottom: 12px; }
 .me { color: var(--me); }
@@ -115,9 +113,14 @@ h2 { font-size: 20px; line-height: 1.5; }
 .result-item h2 { font-size: 16px; }
 .result-cell { display: grid; gap: 2px; min-width: 0; font-size: 14px; }
 .result-number { font-family: var(--font-mono); }
-.result-solution { min-width: 0; overflow-wrap: anywhere; }
+.result-review { display: grid; gap: 12px; min-width: 0; padding-top: 20px; border-top: 1px solid var(--line); }
+.result-solution { min-width: 0; padding: 0 12px 12px; border: 1px solid var(--line); border-radius: 12px; overflow-wrap: anywhere; }
 .result-solution summary { min-height: 44px; padding: 8px 0; cursor: pointer; color: var(--primary-ink); }
 .result-solution p { margin-top: 8px; }
+.result-answer { padding: 8px; border-radius: 8px; }
+.result-answer.is-correct { color: var(--accent); }
+.result-answer.is-wrong { background: var(--line); color: var(--ink-soft); }
+.result-answer.is-wrong::before { content: '✕ '; font-weight: 700; }
 .result-actions { display: grid; gap: 10px; }
 
 @media (prefers-reduced-motion: reduce) {
