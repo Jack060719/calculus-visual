@@ -3,103 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="拖曳、靠近、累積，用互動圖像看見微積分的直覺。">
-  <title>看見微積分</title>
+  <meta name="description" content="選個主題，練習微積分，再邀朋友一起 PK。">
+  <title>微積分 PK</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
   <link rel="stylesheet" href="css/style.css">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
-  <script defer src="js/core/theme.js"></script>
-  <script defer src="js/core/plot.js"></script>
-  <script defer src="js/sections/limit.js"></script>
-  <script defer src="js/sections/derivative.js"></script>
-  <script defer src="js/sections/integral.js"></script>
-  <script defer src="js/sections/taylor.js"></script>
-  <script defer>
-    // 內嵌腳本的 defer 不延後執行，以 DOMContentLoaded 等待前面的外部腳本。
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+  <script defer src="js/config.js"></script>
+  <script defer src="data/questions.js"></script>
+  <script defer src="js/core/rng.js"></script>
+  <script defer src="js/core/store.js"></script>
+  <script defer src="js/core/fx.js"></script>
+  <script defer src="js/core/quiz.js"></script>
+  <script defer src="js/core/router.js"></script>
+  <script defer src="js/net/realtime.js"></script>
+  <script defer src="js/pages/home.js"></script>
+  <script defer src="js/pages/solo.js"></script>
+  <script defer src="js/pages/challenge.js"></script>
+  <script defer src="js/pages/pk.js"></script>
+  <script defer src="js/pages/result.js"></script>
+  <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var titles = { limit: '極限', derivative: '導數', integral: '積分', taylor: '泰勒' };
-      document.querySelectorAll('[data-section]').forEach(function (mountEl) {
-        var name = mountEl.dataset.section;
-        try {
-          if (CV.sections[name]) {
-            CV.sections[name].init(mountEl);
-            return;
-          }
-          var shell = CV.ui.shell(mountEl, {
-            title: titles[name],
-            lede: '從一個可以親手移動的點，開始理解變化。',
-            tex: 'f(x) = \\sin x'
-          });
-          var badge = document.createElement('span');
-          badge.className = 'cv-badge';
-          badge.textContent = '此區塊建置中';
-          var help = document.createElement('p');
-          help.textContent = '拖曳洋紅色的點，觀察它沿著曲線移動。拖曳空白處平移；按住 Ctrl／⌘ 滾輪或雙指捏合縮放；雙擊或雙點兩下回復。';
-          var targetX = 0.8;
-          var shownX = targetX;
-          var shownRadius = 6;
-          var readout = CV.ui.readout('曲線上的座標');
-          var slider = CV.ui.slider({
-            label: '移動觀察點 x', min: -5, max: 5, step: 0.01, value: targetX,
-            format: function (v) { return CV.plot.fmt(v, 2); },
-            onInput: function (v) { targetX = v; }
-          });
-          var handle;
-          var p = CV.plot.create(shell.vizEl, {
-            x: [-5, 5], y: [-2, 2], aspect: 4 / 3, grid: true, axes: true, zoom: true,
-            draw: function (ctx, plot, dt) {
-              shownX = CV.plot.damp(shownX, targetX, 24, dt);
-              shownRadius = CV.plot.damp(shownRadius, handle && (handle.hover || handle.active) ? 8 : 6, 24, dt);
-              plot.curve(Math.sin, { glow: 8 });
-              plot.segment(shownX, 0, shownX, Math.sin(shownX), {
-                color: CV.theme.roles.active, dash: [4, 5], alpha: 0.6
-              });
-              plot.dot(shownX, Math.sin(shownX), {
-                r: shownRadius,
-                color: CV.theme.roles.active, glow: 16
-              });
-              plot.text('sin x', 3.5, Math.sin(3.5), { color: CV.theme.roles.curve, offset: [0, -18] });
-              readout.set('(' + CV.plot.fmt(shownX, 2) + ', ' + CV.plot.fmt(Math.sin(shownX), 2) + ')');
-            }
-          });
-          handle = p.addHandle({
-            get: function () { return { x: shownX, y: Math.sin(shownX) }; },
-            set: function (x) {
-              targetX = Math.max(-5, Math.min(5, x));
-              slider.set(targetX);
-            },
-            radius: 20
-          });
-          shell.panelEl.append(badge, help, slider.el, readout.el, CV.ui.button({
-            label: '回到初始視野', onClick: function () { p.resetView(); }
-          }).el);
-        } catch (error) {
-          console.error('區塊初始化失敗：' + name, error);
-        }
-      });
+      Calc.router.start();
     });
   </script>
 </head>
 <body>
-  <header class="cv-hero">
-    <p class="cv-eyebrow">用直覺，走進數學</p>
-    <h1>看見<span>微積分</span></h1>
-    <p>把抽象的公式，變成指尖下看得見的變化。</p>
-    <a class="cv-btn" href="#limit">開始探索 <span aria-hidden="true">↓</span></a>
-  </header>
-  <nav class="cv-nav" aria-label="章節導覽">
-    <a href="#limit"><span>01</span> 極限</a>
-    <a href="#derivative"><span>02</span> 導數</a>
-    <a href="#integral"><span>03</span> 積分</a>
-    <a href="#taylor"><span>04</span> 泰勒</a>
-  </nav>
-  <main>
-    <section id="limit" class="cv-section" data-section="limit" data-number="01" aria-label="極限"></section>
-    <section id="derivative" class="cv-section" data-section="derivative" data-number="02" aria-label="導數"></section>
-    <section id="integral" class="cv-section" data-section="integral" data-number="03" aria-label="積分"></section>
-    <section id="taylor" class="cv-section" data-section="taylor" data-number="04" aria-label="泰勒"></section>
-  </main>
-  <footer class="cv-footer">靠近一點，看見變化。累積一點，理解世界。</footer>
+  <main id="app" aria-label="微積分 PK"></main>
 </body>
 </html>
