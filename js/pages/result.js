@@ -70,6 +70,23 @@
     return note;
   }
 
+  // 單人、挑戰、PK 的結算提示（T15）：「本局 X 題加入錯題本」＋「去重練」按鈕
+  function wrongNote(outcome) {
+    var note = node('div', 'result-progress');
+    note.setAttribute('role', 'status');
+    if (!outcome.wrong) {
+      note.appendChild(node('p', 'result-progress-main', '✓ 全部答對，沒有新的錯題'));
+      return note;
+    }
+    note.appendChild(node('p', 'result-progress-main', '本局 ' + outcome.wrong + ' 題加入錯題本'));
+    note.appendChild(node('p', '', '錯題本共 ' + Calc.progress.wrongCount() + ' 題，趁記憶還新，馬上重練一次吧。'));
+    var button = node('button', 'btn ghost', '去重練');
+    button.type = 'button';
+    button.addEventListener('click', function () { Calc.router.go('#review/play'); });
+    note.appendChild(button);
+    return note;
+  }
+
   async function render(el, options) {
     var me = options.me;
     var opp = options.opp;
@@ -95,6 +112,7 @@
     var correct = typeof summary.correct === 'number' ? summary.correct : summary.perQ.filter(function (value) { return value > 0; }).length;
     card.appendChild(node('p', '', '答對 ' + correct + ' / ' + summary.perQ.length + ' 題'));
     if (options.mode === 'review' && outcome) card.appendChild(reviewNote(outcome));
+    else if (outcome) card.appendChild(wrongNote(outcome));
     var list = node('ol', 'result-list');
     summary.perQ.forEach(function (value, index) {
       var item = node('li', 'result-item');
