@@ -246,6 +246,8 @@
           if (round !== thisRound || phase !== 'countdown') return;
           phase = 'playing';
           var questions = Calc.quiz.build(topic, data.seed, 8, difficulty);
+          // 每一局（含再來一局）都有新的種子，識別碼也就不同
+          var gameId = Calc.progress.gameId('pk', data.seed);
           game = Calc.quiz.play(el, {
             questions: questions,
             mode: 'pk',
@@ -264,6 +266,7 @@
                 totalMs: theirs.reduce(function (sum, rec) { return sum + rec.ms; }, 0)
               };
               Calc.pages.result.render(el, {
+                mode: 'pk', gameId: gameId,
                 topic: topic, difficulty: difficulty, me: { name: name, summary: summary }, opp: { name: opponent.name, summary: oppSummary },
                 actions: [
                   { label: '再來一局', primary: true, onClick: function () {

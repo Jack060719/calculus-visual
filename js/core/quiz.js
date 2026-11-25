@@ -63,6 +63,31 @@
     });
   }
 
+  // 錯題重練專用（T12）：照指定的題目 id 出題。
+  // 注意：上面的 build 一字不動，PK 與連結挑戰都只用 build，所以同一個種子抽到的題目和以前完全一樣。
+  // 這裡用另一組亂數（salt 是 'review'），題目順序照 ids 的順序，只用種子打亂選項順序。
+  // 題庫裡找不到的 id（例如題目被刪掉）會直接跳過；重複的 id 只出一次。
+  function buildFromIds(ids, seed) {
+    var rng = Calc.rng.create(seed, 'review');
+    var byId = {};
+    Calc.questions.forEach(function (q) { byId[q.id] = q; });
+    var used = Object.create(null);
+    return ids.filter(function (id) {
+      if (!byId[id] || used[id]) return false;
+      used[id] = true;
+      return true;
+    }).map(function (id) {
+      var q = byId[id];
+      var order = rng.shuffle([0, 1, 2, 3]);
+      // 輸出格式和 build 一樣，quiz.play 與結算頁可以直接使用
+      return {
+        id: q.id, topic: q.topic, difficulty: q.difficulty, stem: q.stem,
+        choices: order.map(function (i) { return q.choices[i].tex; }),
+        answer: order.indexOf(q.answer), solution: q.solution
+      };
+    });
+  }
+
   function score(correct, ms) {
     return !correct || ms >= LIMIT_MS ? 0 : 100 + Math.floor(Math.max(0, LIMIT_MS - ms) / 1000) * 5;
   }
@@ -258,6 +283,6 @@
     };
   }
 
-  Calc.quiz = { TOPICS: TOPICS, LABELS: LABELS, DIFFICULTIES: DIFFICULTIES, DIFFICULTY_LABELS: DIFFICULTY_LABELS, LIMIT_MS: LIMIT_MS, COUNT: COUNT, build: build, score: score, compare: compare, play: play };
+  Calc.quiz = { TOPICS: TOPICS, LABELS: LABELS, DIFFICULTIES: DIFFICULTIES, DIFFICULTY_LABELS: DIFFICULTY_LABELS, LIMIT_MS: LIMIT_MS, COUNT: COUNT, build: build, buildFromIds: buildFromIds, score: score, compare: compare, play: play };
   if (typeof module !== 'undefined') module.exports = Calc.quiz;
 }(typeof window !== 'undefined' ? window : globalThis));

@@ -15,6 +15,8 @@
         if (game) game.destroy();
         var seed = Calc.rng.newSeed();
         var questions = Calc.quiz.build(topic, seed, 8, difficulty);
+        // 這一局的識別碼，結算頁用來避免重複記錄錯題
+        var gameId = Calc.progress.gameId('solo', seed);
         await Calc.fx.countdown(el);
         if (current !== session) return;
         game = Calc.quiz.play(el, {
@@ -32,7 +34,7 @@
                 Calc.challenge.offer(el, { name: name, topic: topic, difficulty: difficulty, seed: seed, summary: summary });
               } });
             }
-            Calc.pages.result.render(el, { topic: topic, difficulty: difficulty, me: { name: name, summary: summary }, actions: actions });
+            Calc.pages.result.render(el, { mode: 'solo', gameId: gameId, topic: topic, difficulty: difficulty, me: { name: name, summary: summary }, actions: actions });
           }
         });
         game.start();

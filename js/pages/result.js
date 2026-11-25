@@ -30,10 +30,25 @@
     return cell;
   }
 
+  // 把這一局寫進錯題本與學習進度（T12）。三種玩法和錯題重練都從這裡寫入，只有這一個寫入點。
+  // options.gameId 是一局的識別碼：同一局就算重畫結算頁，progress.record 也只會記一次。
+  // 回傳本局的結果（答錯幾題、新加入幾題、掌握了哪些題），沒有 gameId 時回傳 null。
+  function recordProgress(options) {
+    if (!options.gameId || !Calc.progress) return null;
+    try {
+      return Calc.progress.record({ id: options.gameId, mode: options.mode, summary: options.me.summary });
+    } catch (error) {
+      // 進度資料出問題時，結算頁照常顯示
+      return null;
+    }
+  }
+
   async function render(el, options) {
     var me = options.me;
     var opp = options.opp;
     var summary = me.summary;
+    // 結算時寫入進度；outcome 之後在結算頁顯示「本局 X 題加入錯題本」
+    var outcome = recordProgress(options);
     var card = node('article', 'card result-card');
     card.appendChild(node('span', 'badge', Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[options.difficulty === undefined ? 'mixed' : options.difficulty]));
     card.appendChild(node('h1', '', '這一局的收穫'));

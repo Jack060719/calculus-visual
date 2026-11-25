@@ -221,6 +221,8 @@
         stopLeaderboard();
         await Calc.fx.countdown(el);
         if (current !== session) return;
+        // 同一個挑戰可以重打很多次（種子相同），所以識別碼另外加上開始時間
+        var gameId = Calc.progress.gameId('challenge', payload.seed);
         game = Calc.quiz.play(el, {
           questions: Calc.quiz.build(payload.topic, payload.seed, 8, payload.difficulty),
           mode: 'solo',
@@ -232,6 +234,8 @@
             notice.setAttribute('role', 'status');
             extra.append(board, notice);
             Calc.pages.result.render(el, {
+              mode: 'challenge',
+              gameId: gameId,
               topic: payload.topic,
               difficulty: payload.difficulty,
               me: { name: name, summary: summary },
