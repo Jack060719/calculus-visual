@@ -269,8 +269,10 @@ h2 { font-size: 20px; line-height: 1.5; }
 
 /* === 改善：小修正 === */
 
-/* 選中的主題卡片底色是琥珀色，說明文字改用深琥珀，避免灰字在琥珀底上看不清楚 */
-.topic-chip[aria-pressed="true"] span { color: var(--primary-ink); }
+/* 選中的主題卡片底色是琥珀色（--primary #E3A33B），12px 小字要達到 WCAG AA 4.5:1。
+   灰字 --ink-soft 只有 2.29:1、深琥珀 --primary-ink 也只有 3.27:1，改用全站文字色 --ink（#1F2430）= 7.07:1。
+   只改這張卡片選中時的小字，不動全站配色變數。 */
+.topic-chip[aria-pressed="true"] span { color: var(--ink); }
 /* 結算畫面停用的按鈕（例如對手離開後的「再來一局」）要看得出不能按 */
 .result-actions .btn:disabled { cursor: default; opacity: 0.55; }
 .pk-left-notice { color: var(--ink-soft); font-size: 14px; }

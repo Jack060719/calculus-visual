@@ -75,15 +75,27 @@
         // 不要用全螢幕遮罩蓋住成績，只提示一下並停用「再來一局」。
         if (wasResult) {
           var rematch = el.querySelector('.result-actions .primary');
+          // 停用前先記下焦點是不是在這顆按鈕上；按鈕被停用後焦點會掉到頁面最上方。
+          var hadFocus = !!rematch && document.activeElement === rematch;
           if (rematch) {
             rematch.disabled = true;
             rematch.textContent = '對手已離開，無法再來一局';
           }
           var actions = el.querySelector('.result-actions');
           if (actions) {
-            var notice = node('p', 'pk-left-notice', '對手已離開房間，你仍可查看這局的成績與詳解。');
+            // 先放一個「空的」狀態區塊，下一個畫面再填文字：
+            // 報讀器（VoiceOver、TalkBack）只會念出 live region「後來變動」的內容。
+            var notice = node('p', 'pk-left-notice');
             notice.setAttribute('role', 'status');
+            notice.setAttribute('aria-live', 'polite');
+            // tabindex=-1：不會出現在 Tab 順序裡，但可以用程式把焦點移過來。
+            notice.tabIndex = -1;
             actions.before(notice);
+            window.requestAnimationFrame(function () {
+              notice.textContent = '對手已離開房間，你仍可查看這局的成績與詳解。';
+              // 焦點原本在「再來一局」上，就移到這段提示，鍵盤與報讀器使用者不會迷路。
+              if (hadFocus) notice.focus();
+            });
           }
           return;
         }
