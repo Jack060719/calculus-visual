@@ -66,10 +66,27 @@
 
       function offline() {
         if (phase === 'offline' || phase === 'error') return;
+        var wasResult = phase === 'result';
         phase = 'offline';
         round++;
         clearTimers();
         if (game) game.destroy();
+        // 已經在結算畫面：對手看完成績先回首頁是正常的，
+        // 不要用全螢幕遮罩蓋住成績，只提示一下並停用「再來一局」。
+        if (wasResult) {
+          var rematch = el.querySelector('.result-actions .primary');
+          if (rematch) {
+            rematch.disabled = true;
+            rematch.textContent = '對手已離開，無法再來一局';
+          }
+          var actions = el.querySelector('.result-actions');
+          if (actions) {
+            var notice = node('p', 'pk-left-notice', '對手已離開房間，你仍可查看這局的成績與詳解。');
+            notice.setAttribute('role', 'status');
+            actions.before(notice);
+          }
+          return;
+        }
         var overlay = node('div', 'pk-overlay');
         overlay.setAttribute('role', 'alertdialog');
         overlay.setAttribute('aria-label', '對手已離線');
@@ -183,8 +200,8 @@
         showScores();
         later(function () {
           current++;
-          scoreBar.reset();
-          showScores();
+          // 只清掉「已作答」標記；分數保持累計值，不要每題都從 0 重新跑一次數字。
+          scoreBar.clearStatus();
           game.next();
           if (phase === 'playing') questionStarted();
         }, 1200);

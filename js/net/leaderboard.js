@@ -79,11 +79,18 @@
       el.classList.add('leaderboard');
       el.replaceChildren(heading, content);
 
+      // 上一次畫出來的資料；內容沒變就不重畫，
+      // 避免螢幕報讀器（aria-live）每 10 秒把整張表重念一次。
+      var lastShown = null;
+
       async function refresh() {
         if (destroyed) return;
         var current = ++request;
         var rows = await Calc.leaderboard.fetch(challengeId);
         if (destroyed || current !== request) return;
+        var shown = JSON.stringify(rows);
+        if (shown === lastShown) return;
+        lastShown = shown;
         if (!rows || !rows.length) {
           content.replaceChildren(node('p', 'leaderboard-status', rows ? '還沒有人挑戰，成為第一個吧！' : '排行榜暫時無法載入'));
           return;
@@ -115,13 +122,23 @@
         window.clearInterval(timer);
         window.removeEventListener('hashchange', destroy);
         window.removeEventListener('pagehide', destroy);
+        document.removeEventListener('visibilitychange', onVisible);
         button.removeEventListener('click', refresh);
       }
 
+      // 切回這個分頁時立刻更新一次，不用等下一個 10 秒。
+      function onVisible() {
+        if (!document.hidden) refresh();
+      }
+
       button.addEventListener('click', refresh);
-      var timer = window.setInterval(refresh, 10000);
+      // 分頁在背景（看不到）時就不查資料庫，省流量也省 Supabase 免費額度。
+      var timer = window.setInterval(function () {
+        if (!document.hidden) refresh();
+      }, 10000);
       window.addEventListener('hashchange', destroy);
       window.addEventListener('pagehide', destroy);
+      document.addEventListener('visibilitychange', onVisible);
       refresh();
       return { refresh: refresh, destroy: destroy };
     }

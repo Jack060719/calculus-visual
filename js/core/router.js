@@ -19,6 +19,11 @@
     }
 
     if (currentPage) currentPage.unmount();
+    // 倒數遮罩掛在 body 上，不會跟著頁面一起清掉；
+    // 倒數中途換頁（例如按上一頁）時要手動移除，否則會蓋住新頁面好幾秒。
+    document.querySelectorAll('.fx-countdown-overlay').forEach(function (overlay) {
+      overlay.remove();
+    });
     var pageEl = document.createElement('section');
     pageEl.className = 'page';
     document.getElementById('app').replaceChildren(pageEl);
