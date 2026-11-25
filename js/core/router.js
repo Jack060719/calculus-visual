@@ -18,6 +18,9 @@
       // 錯題本 #review、錯題重練 #review/play（T13）
       name = 'review';
       param = hash === '#review/play' ? 'play' : undefined;
+    } else if (hash === '#progress') {
+      // 學習診斷（T14）
+      name = 'progress';
     } else if (hash !== '#home') {
       Calc.router.replace('#home');
     }
