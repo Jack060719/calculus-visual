@@ -358,15 +358,20 @@ function main(args) {
       const topic = args[++i];
       if (!Object.hasOwn(topics, topic)) throw new Error('--topic 必須為 '+Object.keys(topics).join('、'));
       selectedTopics = [topic];
-    } else if (!['--no-count', '--selftest', '--strict-concepts'].includes(args[i])) throw new Error('未知參數：'+args[i]);
+    } else if (!['--no-count', '--selftest', '--strict-concepts', '--allow-untagged'].includes(args[i])) throw new Error('未知參數：'+args[i]);
   }
   const bank = questions.filter(q => selectedTopics.includes(q.topic) || selectedTopics.length === Object.keys(topics).length);
   const { failures, counts } = verifyBank(bank, selectedTopics, args.includes('--no-count'));
   failures.push(...verifyConceptList());
-  // 觀念標籤覆蓋率：沒標的題目先不算失敗，題庫組全部標完後改用 --strict-concepts 檢查。
+  // 觀念標籤：題庫組標完 300 題後，預設每題都要有標籤（T15 起）。
+  // 還在標註中、想先檢查其他項目時，可以加 --allow-untagged（沒標的題只報數量，不算失敗）。
+  // --strict-concepts 是舊參數，現在和預設相同。
   const untagged = bank.filter(q => q.concepts === undefined);
-  if (args.includes('--strict-concepts')) {
-    untagged.forEach(q => failures.push(q.id+'：缺少觀念標籤 concepts'));
+  if (!args.includes('--allow-untagged')) {
+    selectedTopics.forEach(topic => {
+      const ids = untagged.filter(q => q.topic === topic).map(q => q.id);
+      if (ids.length) failures.push(topic+'：還沒標觀念 concepts 的題目 '+ids.length+' 題：'+ids.join('、'));
+    });
   }
   if (failures.length) {
     failures.forEach(failure => console.error(failure));
@@ -375,7 +380,7 @@ function main(args) {
     selectedTopics.forEach(topic => console.log(topic+'：'+counts[topic].reduce((a, b) => a+b, 0)+' 題'));
     console.log('全部 '+bank.length+' 題驗證通過');
     console.log('觀念標籤：已標 '+(bank.length-untagged.length)+' / '+bank.length+' 題'+
-      (untagged.length ? '（未標的題目不影響驗證；全部標完後可加 --strict-concepts 檢查）' : ''));
+      (untagged.length ? '（因為加了 --allow-untagged，未標的題目不算失敗）' : ''));
   }
   if (args.includes('--selftest')) {
     let caught = 0;
