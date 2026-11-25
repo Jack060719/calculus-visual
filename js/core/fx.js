@@ -164,6 +164,14 @@
             { transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }
           ], { duration: reducedMotion() ? 80 : 360, easing: 'ease-out' });
         },
+        // 換下一題時用：清掉雙方的「已作答」字樣，但保留目前分數與分數條。
+        clearStatus: function () {
+          ['me', 'opp'].forEach(function (side) {
+            var row = rows[side];
+            row.status.textContent = '';
+            row.plate.getAnimations().forEach(function (animation) { animation.cancel(); });
+          });
+        },
         reset: function () {
           set(0, 0);
           window.cancelAnimationFrame(frame);
