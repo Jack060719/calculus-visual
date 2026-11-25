@@ -14,6 +14,10 @@
     } else if (hash.indexOf('#room=') === 0 && hash.length > 6) {
       name = 'pk';
       param = hash.slice(6);
+    } else if (hash === '#review' || hash === '#review/play') {
+      // 錯題本 #review、錯題重練 #review/play（T13）
+      name = 'review';
+      param = hash === '#review/play' ? 'play' : undefined;
     } else if (hash !== '#home') {
       Calc.router.replace('#home');
     }

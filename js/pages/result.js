@@ -43,6 +43,20 @@
     }
   }
 
+  // 錯題重練的結算提示：本局掌握了幾題、錯題本還剩幾題（T13）
+  function reviewNote(outcome) {
+    var note = node('div', 'result-progress');
+    note.setAttribute('role', 'status');
+    if (outcome.mastered.length) {
+      note.appendChild(node('p', 'result-progress-main', '✓ 本局 ' + outcome.mastered.length + ' 題已掌握，移出錯題本'));
+    } else {
+      note.appendChild(node('p', 'result-progress-main', '同一題在重練中連續答對 2 次就能掌握'));
+    }
+    var left = Calc.progress.wrongCount();
+    note.appendChild(node('p', '', left ? '錯題本還有 ' + left + ' 題' : '錯題本清空了，太厲害了！'));
+    return note;
+  }
+
   async function render(el, options) {
     var me = options.me;
     var opp = options.opp;
@@ -50,7 +64,8 @@
     // 結算時寫入進度；outcome 之後在結算頁顯示「本局 X 題加入錯題本」
     var outcome = recordProgress(options);
     var card = node('article', 'card result-card');
-    card.appendChild(node('span', 'badge', Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[options.difficulty === undefined ? 'mixed' : options.difficulty]));
+    // options.badge 可以自訂上方小標（例如錯題重練）；沒有的話顯示主題・難度
+    card.appendChild(node('span', 'badge', options.badge || Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[options.difficulty === undefined ? 'mixed' : options.difficulty]));
     card.appendChild(node('h1', '', '這一局的收穫'));
     var verdict = node('div', 'result-verdict');
     verdict.setAttribute('role', 'status');
@@ -66,6 +81,7 @@
     card.appendChild(players);
     var correct = typeof summary.correct === 'number' ? summary.correct : summary.perQ.filter(function (value) { return value > 0; }).length;
     card.appendChild(node('p', '', '答對 ' + correct + ' / ' + summary.perQ.length + ' 題'));
+    if (options.mode === 'review' && outcome) card.appendChild(reviewNote(outcome));
     var list = node('ol', 'result-list');
     summary.perQ.forEach(function (value, index) {
       var item = node('li', 'result-item');

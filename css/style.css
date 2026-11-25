@@ -276,3 +276,19 @@ h2 { font-size: 20px; line-height: 1.5; }
 /* 結算畫面停用的按鈕（例如對手離開後的「再來一局」）要看得出不能按 */
 .result-actions .btn:disabled { cursor: default; opacity: 0.55; }
 .pk-left-notice { color: var(--ink-soft); font-size: 14px; }
+
+/* === T13 錯題本與重練 === */
+
+.review-head, .review-empty, .review-group { display: grid; gap: 16px; min-width: 0; }
+.review-count { color: var(--primary-ink); font-weight: 700; }
+.review-hint { color: var(--ink-soft); font-size: 14px; }
+.review-group h2 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.review-group-count { color: var(--ink-soft); font-size: 14px; font-weight: 500; }
+.review-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.review-item { display: grid; gap: 8px; min-width: 0; padding-top: 16px; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.review-meta { color: var(--ink-soft); font-size: 13px; }
+.review-stem { font-size: 17px; line-height: 1.8; }
+/* 長公式在手機上可以左右捲，不會撐破版面 */
+.review-item .katex { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: 0.25em; vertical-align: middle; }
+.result-progress { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; background: var(--bg); }
+.result-progress-main { color: var(--primary-ink); font-weight: 700; }
