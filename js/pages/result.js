@@ -75,15 +75,16 @@
   // 原本就在錯題本裡、這局又答錯的題，只把錯誤次數加一，不算進 X（審查 PR #6 第 1 點）。
   function wrongNote(outcome) {
     var note = node('div', 'result-progress');
-    note.setAttribute('role', 'status');
     if (!outcome.wrong) {
-      note.appendChild(node('p', 'result-progress-main', '✓ 全部答對，沒有新的錯題'));
+      liveNote(note, [{ main: true, text: '✓ 全部答對，沒有新的錯題' }]);
       return note;
     }
-    note.appendChild(node('p', 'result-progress-main', '本局新增 ' + outcome.added + ' 題到錯題本'));
+    var lines = [{ main: true, text: '本局新增 ' + outcome.added + ' 題到錯題本' }];
     var again = outcome.wrong - outcome.added;   // 原本就在錯題本、這局又錯的題數
-    if (again > 0) note.appendChild(node('p', '', '另有 ' + again + ' 題原本就在錯題本，錯誤次數加一'));
-    note.appendChild(node('p', '', '錯題本共 ' + Calc.progress.wrongCount() + ' 題，趁記憶還新，馬上重練一次吧。'));
+    if (again > 0) lines.push({ text: '另有 ' + again + ' 題原本就在錯題本，錯誤次數加一' });
+    lines.push({ text: '錯題本共 ' + Calc.progress.wrongCount() + ' 題，趁記憶還新，馬上重練一次吧。' });
+    // 文字放在 role=status 區塊裡、先空著再填（審查 PR #6 第 2 點）；按鈕放在區塊外面，不會被當成通知念出來
+    liveNote(note, lines);
     var button = node('button', 'btn ghost', '去重練');
     button.type = 'button';
     button.addEventListener('click', function () { Calc.router.go('#review/play'); });
