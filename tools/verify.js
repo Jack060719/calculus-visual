@@ -249,20 +249,63 @@ function verifyQuestion(q) {
 // 觀念清單本身的檢查：代號不可重複、主題要合法、名稱不可空白、六個主題都要有觀念。
 function verifyConceptList(list = concepts.list) {
   const failures = [];
+  if (!Array.isArray(list)) return ['觀念清單必須是陣列'];
   const seen = new Set();
-  list.forEach(concept => {
-    const where = '觀念清單 '+(concept && concept.id);
-    if (!concept || typeof concept.id !== 'string' || !/^[a-z]+\.[a-z]+$/.test(concept.id)) failures.push(where+'：代號格式不合法（例如 der.chain）');
+  list.forEach((concept, index) => {
+    // 先確認是物件，再讀欄位；任何欄位型別不對都只記錄錯誤，不會讓 verify 當掉
+    if (!concept || typeof concept !== 'object') {
+      failures.push('觀念清單第 '+(index+1)+' 筆：不是物件');
+      return;
+    }
+    const idOk = typeof concept.id === 'string' && /^[a-z]+\.[a-z]+$/.test(concept.id);
+    const where = '觀念清單 '+(typeof concept.id === 'string' ? concept.id : '第 '+(index+1)+' 筆（代號 '+JSON.stringify(concept.id)+'）');
+    if (!idOk) failures.push(where+'：代號格式不合法，必須是字串（例如 der.chain）');
     else if (seen.has(concept.id)) failures.push(where+'：代號重複');
-    if (concept) seen.add(concept.id);
-    if (!concept || !Object.hasOwn(topics, concept.topic)) failures.push(where+'：topic 不合法');
-    else if (concept.id.split('.')[0] !== topics[concept.topic]) failures.push(where+'：代號開頭應為 '+topics[concept.topic]+'.');
-    if (!concept || typeof concept.label !== 'string' || !concept.label.trim()) failures.push(where+'：缺少中文名稱');
+    else seen.add(concept.id);
+    if (typeof concept.topic !== 'string' || !Object.hasOwn(topics, concept.topic)) failures.push(where+'：topic 不合法');
+    // 代號開頭和主題一致：只有代號格式正確、主題合法時才檢查（避免對非字串呼叫 split）
+    else if (idOk && concept.id.split('.')[0] !== topics[concept.topic]) failures.push(where+'：代號開頭應為 '+topics[concept.topic]+'.');
+    if (typeof concept.label !== 'string' || !concept.label.trim()) failures.push(where+'：缺少中文名稱');
   });
   Object.keys(topics).forEach(topic => {
     if (!list.some(concept => concept && concept.topic === topic)) failures.push('觀念清單：'+topic+' 沒有任何觀念');
   });
   return failures;
+}
+
+// --selftest 用：故意做壞的觀念資料，每一筆都必須被抓到（而且不能讓 verify 當掉）。
+function conceptSelftest() {
+  const results = [];
+  const check = (name, fn) => {
+    let caught = false;
+    try { caught = fn().length > 0; }
+    catch (error) { console.error('觀念自我測試「'+name+'」當掉：'+error.message); }
+    if (!caught) console.error('觀念自我測試「'+name+'」沒有被抓到');
+    results.push(caught);
+  };
+  const q = { id: 'der-01', topic: 'derivative' };
+  // 單題標籤
+  check('空陣列', () => verifyConcepts(Object.assign({}, q, { concepts: [] })));
+  check('超過 2 個', () => verifyConcepts(Object.assign({}, q, { concepts: ['der.chain', 'der.basic', 'der.log'] })));
+  check('重複代號', () => verifyConcepts(Object.assign({}, q, { concepts: ['der.chain', 'der.chain'] })));
+  check('跨主題代號', () => verifyConcepts(Object.assign({}, q, { concepts: ['lim.sub'] })));
+  check('清單外代號', () => verifyConcepts(Object.assign({}, q, { concepts: ['xxx.yyy'] })));
+  check('不是陣列', () => verifyConcepts(Object.assign({}, q, { concepts: 'der.chain' })));
+  check('代號不是字串', () => verifyConcepts(Object.assign({}, q, { concepts: [123] })));
+  // 觀念清單本身
+  const good = concepts.list;
+  check('清單代號是數字', () => verifyConceptList(good.concat([{ id: 123, topic: 'limit', label: '測試' }])));
+  check('清單有 null', () => verifyConceptList(good.concat([null])));
+  check('清單代號重複', () => verifyConceptList(good.concat([Object.assign({}, good[0])])));
+  check('清單代號開頭與主題不符', () => verifyConceptList(good.concat([{ id: 'der.test', topic: 'limit', label: '測試' }])));
+  check('清單主題不合法', () => verifyConceptList(good.concat([{ id: 'lim.test', topic: 'calculus', label: '測試' }])));
+  check('清單缺中文名稱', () => verifyConceptList(good.concat([{ id: 'lim.test', topic: 'limit', label: ' ' }])));
+  check('清單少了某個主題', () => verifyConceptList(good.filter(c => c.topic !== 'series')));
+  check('清單不是陣列', () => verifyConceptList('lim.sub'));
+  // 正確的資料不能誤報
+  const falseAlarm = verifyConcepts(Object.assign({}, q, { concepts: ['der.chain', 'der.basic'] })).length + verifyConceptList(good).length;
+  if (falseAlarm) console.error('觀念自我測試：正確的資料被誤報');
+  return { caught: results.filter(Boolean).length, total: results.length, falseAlarm };
 }
 
 // 單題的觀念標籤檢查。沒有 concepts 欄位＝還沒標，不算錯（要全部標完才檢查時用 --strict-concepts）。
@@ -345,6 +388,9 @@ function main(args) {
     });
     console.log('抓到 '+caught+' / '+bank.length);
     if (caught !== bank.length) process.exitCode = 1;
+    const conceptResult = conceptSelftest();
+    console.log('觀念檢查：抓到 '+conceptResult.caught+' / '+conceptResult.total);
+    if (conceptResult.caught !== conceptResult.total || conceptResult.falseAlarm) process.exitCode = 1;
   }
 }
 
