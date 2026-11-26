@@ -139,12 +139,14 @@
       var date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
       var item = node('li', 'progress-day' + (day.practiced ? ' is-done' : '') + (day.date === today ? ' is-today' : ''));
       var label = (day.date === today ? '今天' : Number(parts[1]) + '/' + Number(parts[2])) + '（' + WEEKDAYS[date.getDay()] + '）' + (day.practiced ? '有練習' : '沒有練習');
-      item.setAttribute('aria-label', label);
+      // 報讀器不一定會念一般 <li> 上的 aria-label（審查 PR #5 第 3 點），
+      // 改成放一段畫面上看不到、報讀器念得到的文字；畫面上的「五」「✓」對報讀器隱藏。
+      var spoken = node('span', 'visually-hidden', label);
       var weekday = node('span', 'progress-weekday', day.date === today ? '今' : WEEKDAYS[date.getDay()]);
       var dot = node('span', 'progress-dot', day.practiced ? '✓' : '');
       weekday.setAttribute('aria-hidden', 'true');
       dot.setAttribute('aria-hidden', 'true');
-      item.append(weekday, dot);
+      item.append(spoken, weekday, dot);
       row.appendChild(item);
     });
     card.appendChild(row);

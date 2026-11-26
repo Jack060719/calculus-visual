@@ -314,15 +314,20 @@ h2 { font-size: 20px; line-height: 1.5; }
 .radar-dot { fill: var(--primary-ink); }
 .radar-dot.is-weakest { fill: var(--opp); stroke: var(--surface); stroke-width: 2; }
 .radar-label { fill: var(--ink); font: 500 15px var(--font-ui); }
-.radar-label.is-weakest { fill: var(--opp); font-weight: 700; }
+/* 「最低」的紅字：--opp（#E0524B）在白底只有 3.83:1，不到 WCAG AA 的 4.5:1。
+   不改全站的 --opp（PK 對手色、輸入錯誤框都在用），也不新增色碼：
+   用既有變數混色，75% --opp ＋ 25% --ink ≈ rgb(176,71,68)，白底 5.48:1、--bg 底 5.09:1。
+   不支援 color-mix 的舊瀏覽器會用前一行的 --ink（深色字）。
+   雷達圖上的紅點、說明框的紅色左框是圖形，只需要 3:1，維持 --opp。 */
+.radar-label.is-weakest { fill: var(--ink); fill: color-mix(in srgb, var(--opp) 75%, var(--ink)); font-weight: 700; }
 .radar-value { fill: var(--ink-soft); font: 600 14px var(--font-mono); }
-.radar-label.is-weakest .radar-value { fill: var(--opp); }
+.radar-label.is-weakest .radar-value { fill: var(--ink); fill: color-mix(in srgb, var(--opp) 75%, var(--ink)); }
 .progress-weakest { padding: 10px 12px; border-left: 4px solid var(--opp); border-radius: 8px; background: var(--bg); font-size: 14px; font-weight: 700; }
 .progress-topics { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; font-size: 14px; }
 .progress-topic { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .progress-topic-value { color: var(--ink-soft); font-family: var(--font-mono); font-size: 13px; }
-.progress-topic.is-weakest { color: var(--opp); font-weight: 700; }
-.progress-topic.is-weakest .progress-topic-value { color: var(--opp); }
+.progress-topic.is-weakest { color: var(--ink); color: color-mix(in srgb, var(--opp) 75%, var(--ink)); font-weight: 700; }
+.progress-topic.is-weakest .progress-topic-value { color: var(--ink); color: color-mix(in srgb, var(--opp) 75%, var(--ink)); }
 .progress-flag { margin-left: 6px; padding: 0 6px; border: 1px solid currentColor; border-radius: 6px; font-size: 11px; }
 .progress-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
 .progress-day { display: grid; justify-items: center; gap: 6px; min-width: 0; }
