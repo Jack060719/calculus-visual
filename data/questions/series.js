@@ -66,7 +66,7 @@
       check: N => N.diff(x => N.diff(y => N.diff(t => Math.sin(2*t), y), x), 0)/6
     },
     {
-      id: 'ser-09', topic: 'series', difficulty: 3, concepts: ['ser.radius', 'ser.geometric'],
+      id: 'ser-09', topic: 'series', difficulty: 3, concepts: ['ser.geometric', 'ser.radius'],
       stem: '將 $x=6$ 代入冪級數 $\\sum_{n=1}^{\\infty}\\frac{(x-1)^n}{4^n}$，所得級數是否收斂？',
       choices: [{ tex: '\\text{收斂}', value: 'converge' }, { tex: '4', value: 4 }, { tex: '\\text{發散}', value: 'diverge' }, { tex: '0', value: 0 }],
       answer: 2,
