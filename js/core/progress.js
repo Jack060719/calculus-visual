@@ -28,6 +28,8 @@
   var MAX_REVIEWS = 10;    // 每題保留幾筆重練紀錄
   var MAX_DAYS = 60;       // 保留幾天的練習日期
   var MAX_GAMES = 20;      // 保留幾局的識別碼
+  var WEAKEST_MIN_SEEN = 3;    // 一個主題至少答過幾題，才拿來比「最低」
+  var WEAKEST_MIN_TOPICS = 2;  // 至少要有幾個主題達標，才標「最低」
   var TOPICS = ['limit', 'derivative', 'derivative-app', 'integral', 'integral-tech', 'series'];
 
   // ---------- 日期工具：一律用使用者的「當地日期」，避免半夜跨日算錯 ----------
@@ -297,6 +299,21 @@
       return result;
     }
 
+    // 答對率最低的主題（學習診斷頁標「最低」用）。
+    // 只有在「至少 2 個主題、各答過 3 題以上」時才標，否則回傳 null（不標）：
+    // 例如只練過一個主題時，就算 100% 也會變成「最低」，看起來很奇怪（審查 PR #5 第 2 點）。
+    // 只在答過 3 題以上的主題裡比較；同分取主題順序在前面的。
+    function weakestTopic() {
+      var stats = topicStats();
+      var candidates = TOPICS.filter(function (topic) { return stats[topic].seen >= WEAKEST_MIN_SEEN; });
+      if (candidates.length < WEAKEST_MIN_TOPICS) return null;
+      var weakest = candidates[0];
+      candidates.forEach(function (topic) {
+        if (stats[topic].rate < stats[weakest].rate) weakest = topic;
+      });
+      return weakest;
+    }
+
     // 已作答題數（不含重練）
     function totalSeen() {
       var stats = topicStats();
@@ -341,6 +358,7 @@
       streak: streak,
       recentDays: recentDays,
       topicStats: topicStats,
+      weakestTopic: weakestTopic,
       totalSeen: totalSeen,
       topConcepts: topConcepts
     };

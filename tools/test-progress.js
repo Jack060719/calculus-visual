@@ -271,4 +271,39 @@ test('呼叫 buildFromIds 不會影響 build 的結果', () => {
   assert.equal(JSON.stringify(quiz.build('mixed', 12345, 8, 'mixed')), before);
 });
 
+test('答對率最低的主題：至少 2 個主題各答過 3 題以上才標（審查 PR #5）', () => {
+  const { p } = setup();
+  const play = (id, ids, results) => p.record({ id, mode: 'solo', summary: summaryOf(ids, results) });
+  // 只練過一個主題（積分 8 題全對）→ 不標
+  play('g1', ['int-01', 'int-02', 'int-03', 'int-04', 'int-05', 'int-06', 'int-07', 'int-08'], [true, true, true, true, true, true, true, true]);
+  assert.equal(p.weakestTopic(), null);
+  // 第二個主題只答 2 題（還不到 3 題）→ 仍然不標
+  play('g2', ['der-01', 'der-02'], [false, false]);
+  assert.equal(p.weakestTopic(), null);
+  // 導數答到第 3 題 → 兩個主題都達標，標答對率較低的導數（1/3）
+  play('g3', ['der-03'], [true]);
+  assert.equal(p.weakestTopic(), 'derivative');
+  // 極限只答 2 題、全錯（0%）：沒達 3 題，不會搶走「最低」
+  play('g4', ['lim-01', 'lim-02'], [false, false]);
+  assert.equal(p.weakestTopic(), 'derivative');
+  // 極限答到第 3 題（0 / 3）→ 達標，成為最低
+  play('g5', ['lim-01'], [false]);
+  assert.equal(p.weakestTopic(), 'limit', '極限 0/3 達標後成為最低');
+});
+
+test('答對率最低的主題：同分取主題順序在前面的', () => {
+  const { p } = setup();
+  p.record({ id: 'g1', mode: 'solo', summary: summaryOf(['der-01', 'der-02', 'der-03', 'lim-01', 'lim-02', 'lim-03'], [true, true, false, true, true, false]) });
+  assert.equal(p.weakestTopic(), 'limit');
+});
+
+test('重練的作答不會讓主題達到「最低」的門檻', () => {
+  const { p } = setup();
+  p.record({ id: 'g1', mode: 'solo', summary: summaryOf(['int-01', 'int-02', 'int-03', 'der-01'], [true, true, true, false]) });
+  p.record({ id: 'r1', mode: 'review', summary: summaryOf(['der-01'], [false]) });
+  p.record({ id: 'r2', mode: 'review', summary: summaryOf(['der-01'], [false]) });
+  assert.equal(p.topicStats().derivative.seen, 1);
+  assert.equal(p.weakestTopic(), null);
+});
+
 console.log(passed + ' 項測試通過' + (process.exitCode ? '，有測試失敗' : ''));

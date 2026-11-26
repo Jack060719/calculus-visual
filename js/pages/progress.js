@@ -30,16 +30,6 @@
     return rate === null ? '尚未作答' : Math.round(rate * 100) + '%';
   }
 
-  // 答對率最低的主題（只看有作答過的主題）；同分取排在前面的
-  function weakestTopic(topics, stats) {
-    var weakest = null;
-    topics.forEach(function (topic) {
-      var rate = stats[topic].rate;
-      if (rate === null) return;
-      if (weakest === null || rate < stats[weakest].rate) weakest = topic;
-    });
-    return weakest;
-  }
 
   // 上方三個數字：已作答、連續天數、錯題本
   function summaryCard() {
@@ -117,6 +107,7 @@
     });
     card.appendChild(chart);
 
+    // 「最低」只在至少 2 個主題各答過 3 題以上時才標（規則在 Calc.progress.weakestTopic）
     if (weakest) {
       var note = node('p', 'progress-weakest');
       note.textContent = '答對率最低：' + Calc.quiz.LABELS[weakest] + '（' + percent(stats[weakest].rate) + '），可以多練這個主題。';
@@ -203,7 +194,7 @@
         el.appendChild(empty);
         return;
       }
-      el.append(summaryCard(), radarCard(topics, stats, weakestTopic(topics, stats)), daysCard(), conceptsCard());
+      el.append(summaryCard(), radarCard(topics, stats, Calc.progress.weakestTopic()), daysCard(), conceptsCard());
       var actions = node('div', 'progress-actions');
       actions.append(link('去錯題本', '#review', true), link('回首頁', '#home'));
       el.appendChild(actions);
