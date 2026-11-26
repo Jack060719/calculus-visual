@@ -286,9 +286,14 @@ h2 { font-size: 20px; line-height: 1.5; }
 .review-group-count { color: var(--ink-soft); font-size: 14px; font-weight: 500; }
 .review-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
 .review-item { display: grid; gap: 8px; min-width: 0; padding-top: 16px; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+/* grid 的子元素預設不會比內容窄；不加 min-width: 0 的話，長公式會把整頁撐寬，而不是在框內左右捲 */
+.review-item > * { min-width: 0; }
 .review-meta { color: var(--ink-soft); font-size: 13px; }
 .review-stem { font-size: 17px; line-height: 1.8; }
 /* 長公式在手機上可以左右捲，不會撐破版面 */
 .review-item .katex { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: 0.25em; vertical-align: middle; }
 .result-progress { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; background: var(--bg); }
 .result-progress-main { color: var(--primary-ink); font-weight: 700; }
+.result-progress-text { display: grid; gap: 4px; }
+/* 可以用鍵盤捲動的長公式（js 加 tabIndex 的那些），聚焦時要看得到外框 */
+.review-item .katex[tabindex]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }

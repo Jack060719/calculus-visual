@@ -3,6 +3,45 @@
 (function () {
   var game;
   var session = 0;   // 每次進入頁面 +1，用來判斷倒數結束時使用者是不是已經離開了
+  var stopWatching = null;   // 離開頁面時停止監看版面寬度
+
+  // 長公式在手機上會變成可以左右捲動的框（CSS overflow-x: auto）。
+  // 只用鍵盤的人要能捲動，框就必須拿得到焦點：真的超出寬度的公式加 tabIndex=0，
+  // 聚焦後就能用左右方向鍵捲動；沒超出的公式不加，避免 Tab 要按很多次（審查 PR #4 第 1 點）。
+  // 超出 4px 以內是 KaTeX 排版的誤差（看不出被切掉），不算。
+  function markScrollable(root) {
+    root.querySelectorAll('.review-item .katex').forEach(function (formula) {
+      if (formula.scrollWidth > formula.clientWidth + 4) {
+        formula.tabIndex = 0;
+      } else {
+        formula.removeAttribute('tabindex');
+      }
+    });
+  }
+
+  // 畫面排好、字型載入完、轉向或版面寬度改變時，都重新檢查一次
+  function watchScrollable(el) {
+    var pending = false;
+    function check() {
+      if (pending) return;
+      pending = true;
+      window.requestAnimationFrame(function () {
+        pending = false;
+        markScrollable(el);
+      });
+    }
+    check();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(check);
+    if (window.ResizeObserver) {
+      // 版面寬度一變（轉向、視窗縮放）就重新檢查
+      var observer = new window.ResizeObserver(check);
+      observer.observe(el);
+      stopWatching = function () { observer.disconnect(); };
+    } else {
+      window.addEventListener('resize', check);
+      stopWatching = function () { window.removeEventListener('resize', check); };
+    }
+  }
 
   function node(tag, className, text) {
     var el = document.createElement(tag);
@@ -63,6 +102,8 @@
     var solution = node('p');
     math(solution, q.solution);
     details.appendChild(solution);
+    // 詳解收合時量不到寬度，打開後再檢查一次公式要不要能用鍵盤捲動
+    details.addEventListener('toggle', function () { if (details.open) markScrollable(details); });
     li.appendChild(details);
     return li;
   }
@@ -100,6 +141,7 @@
       section.appendChild(list);
       el.appendChild(section);
     });
+    watchScrollable(el);
   }
 
   // #review/play：從錯題本抽最多 8 題重打一局
@@ -145,6 +187,8 @@
     },
     unmount: function () {
       session++;
+      if (stopWatching) stopWatching();
+      stopWatching = null;
       if (game) game.destroy();
       game = null;
     }

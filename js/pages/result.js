@@ -44,16 +44,29 @@
   }
 
   // 錯題重練的結算提示：本局掌握了幾題、錯題本還剩幾題（T13）
+  // 報讀器（VoiceOver、TalkBack）只會念出 live region「後來變動」的內容：
+  // 所以先放一個空的 role=status 區塊，等結算卡放進畫面後的下一個 frame 再填文字（審查 PR #4 第 3 點）。
+  // lines 是 [{ text, main }]，main 為 true 的那行用粗體強調。
+  function liveNote(note, lines) {
+    var status = node('div', 'result-progress-text');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    note.appendChild(status);
+    window.requestAnimationFrame(function () {
+      lines.forEach(function (line) {
+        status.appendChild(node('p', line.main ? 'result-progress-main' : '', line.text));
+      });
+    });
+    return status;
+  }
+
   function reviewNote(outcome) {
     var note = node('div', 'result-progress');
-    note.setAttribute('role', 'status');
-    if (outcome.mastered.length) {
-      note.appendChild(node('p', 'result-progress-main', '✓ 本局 ' + outcome.mastered.length + ' 題已掌握，移出錯題本'));
-    } else {
-      note.appendChild(node('p', 'result-progress-main', '同一題在重練中連續答對 2 次就能掌握'));
-    }
     var left = Calc.progress.wrongCount();
-    note.appendChild(node('p', '', left ? '錯題本還有 ' + left + ' 題' : '錯題本清空了，太厲害了！'));
+    liveNote(note, [
+      { main: true, text: outcome.mastered.length ? '✓ 本局 ' + outcome.mastered.length + ' 題已掌握，移出錯題本' : '同一題在重練中連續答對 2 次就能掌握' },
+      { text: left ? '錯題本還有 ' + left + ' 題' : '錯題本清空了，太厲害了！' }
+    ]);
     return note;
   }
 
