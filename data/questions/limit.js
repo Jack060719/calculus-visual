@@ -2,7 +2,7 @@
   var Calc = root.Calc = root.Calc || {};
   var questions = [
     {
-      id: 'lim-01', topic: 'limit', difficulty: 1,
+      id: 'lim-01', topic: 'limit', difficulty: 1, concepts: ['lim.sub'],
       stem: '定義 $f(x)=x^2+2x$（$x\\ne2$），且 $f(2)=k$。若要讓 $f$ 在 $x=2$ 連續，$k$ 應為多少？',
       choices: [{ tex: '6', value: 6 }, { tex: '8', value: 8 }, { tex: '4', value: 4 }, { tex: '12', value: 12 }],
       answer: 1,
@@ -10,7 +10,7 @@
       check: N => N.limit(x => x*x+2*x, 2)
     },
     {
-      id: 'lim-02', topic: 'limit', difficulty: 1,
+      id: 'lim-02', topic: 'limit', difficulty: 1, concepts: ['lim.simplify'],
       stem: '求 $\\lim_{x\\to 3}\\frac{x^2-9}{x-3}$。',
       choices: [{ tex: '0', value: 0 }, { tex: '3', value: 3 }, { tex: '\\text{不存在}', value: 'DNE' }, { tex: '6', value: 6 }],
       answer: 3,
@@ -18,7 +18,7 @@
       check: N => N.limit(x => (x*x-9)/(x-3), 3)
     },
     {
-      id: 'lim-03', topic: 'limit', difficulty: 1,
+      id: 'lim-03', topic: 'limit', difficulty: 1, concepts: ['lim.special'],
       stem: '角度以弧度計，求 $\\lim_{x\\to0}\\frac{\\sin4x}{x}$。',
       choices: [{ tex: '4', value: 4 }, { tex: '1', value: 1 }, { tex: '\\frac14', value: 1/4 }, { tex: '0', value: 0 }],
       answer: 0,
@@ -26,7 +26,7 @@
       check: N => N.limit(x => Math.sin(4*x)/x, 0)
     },
     {
-      id: 'lim-04', topic: 'limit', difficulty: 2,
+      id: 'lim-04', topic: 'limit', difficulty: 2, concepts: ['lim.onesided'],
       stem: '求雙側極限 $\\lim_{x\\to0}\\frac{|x|}{x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '-1', value: -1 }, { tex: '\\text{不存在}', value: 'DNE' }, { tex: '0', value: 0 }],
       answer: 2,
@@ -34,7 +34,7 @@
       check: N => N.limit(x => Math.abs(x)/x, 0)
     },
     {
-      id: 'lim-05', topic: 'limit', difficulty: 2,
+      id: 'lim-05', topic: 'limit', difficulty: 2, concepts: ['lim.onesided', 'lim.infinity'],
       stem: '求右極限 $\\lim_{x\\to0^+}\\frac1x$。',
       choices: [{ tex: '-\\infty', value: '-inf' }, { tex: '+\\infty', value: '+inf' }, { tex: '0', value: 0 }, { tex: '\\text{不存在}', value: 'DNE' }],
       answer: 1,
@@ -42,7 +42,7 @@
       check: N => N.limit(x => 1/x, 0, 'right')
     },
     {
-      id: 'lim-06', topic: 'limit', difficulty: 2,
+      id: 'lim-06', topic: 'limit', difficulty: 2, concepts: ['lim.sub', 'lim.onesided'],
       stem: '定義分段函數：當 $x<1$ 時 $f(x)=2x+1$，當 $x>1$ 時 $f(x)=x^2+2$，且 $f(1)=k$。若要在 $x=1$ 連續，$k$ 應為多少？',
       choices: [{ tex: '2', value: 2 }, { tex: '1', value: 1 }, { tex: '\\text{不存在}', value: 'DNE' }, { tex: '3', value: 3 }],
       answer: 3,
@@ -50,7 +50,7 @@
       check: N => N.limit(x => x < 1 ? 2*x+1 : x*x+2, 1)
     },
     {
-      id: 'lim-07', topic: 'limit', difficulty: 2,
+      id: 'lim-07', topic: 'limit', difficulty: 2, concepts: ['lim.infinity'],
       stem: '求 $\\lim_{x\\to+\\infty}\\frac{5x^2-x}{2x^2+1}$。',
       choices: [{ tex: '\\frac52', value: 5/2 }, { tex: '\\frac25', value: 2/5 }, { tex: '0', value: 0 }, { tex: '+\\infty', value: '+inf' }],
       answer: 0,
@@ -58,7 +58,7 @@
       check: N => N.limitInf(x => (5*x*x-x)/(2*x*x+1))
     },
     {
-      id: 'lim-08', topic: 'limit', difficulty: 3,
+      id: 'lim-08', topic: 'limit', difficulty: 3, concepts: ['lim.special'],
       stem: '求 $\\lim_{x\\to0}\\frac{\\ln(1+2x)}{x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '\\frac12', value: 1/2 }, { tex: '2', value: 2 }, { tex: '0', value: 0 }],
       answer: 2,
@@ -66,7 +66,7 @@
       check: N => N.limit(x => Math.log1p(2*x)/x, 0)
     },
     {
-      id: 'lim-09', topic: 'limit', difficulty: 3,
+      id: 'lim-09', topic: 'limit', difficulty: 3, concepts: ['lim.simplify', 'lim.sub'],
       stem: '已知 $g(x)=\\frac{x^3-1}{x-1}$（$x\\ne1$）。若要讓 $g$ 在 $x=1$ 連續，$g(1)$ 應設為多少？',
       choices: [{ tex: '0', value: 0 }, { tex: '3', value: 3 }, { tex: '1', value: 1 }, { tex: '\\text{不存在}', value: 'DNE' }],
       answer: 1,
@@ -74,7 +74,7 @@
       check: N => N.limit(x => (x*x*x-1)/(x-1), 1)
     },
     {
-      id: 'lim-10', topic: 'limit', difficulty: 3,
+      id: 'lim-10', topic: 'limit', difficulty: 3, concepts: ['lim.special', 'lim.simplify'],
       stem: '求 $\\lim_{x\\to0}\\frac{1-\\cos3x}{x^2}$。',
       choices: [{ tex: '9', value: 9 }, { tex: '\\frac32', value: 3/2 }, { tex: '0', value: 0 }, { tex: '\\frac92', value: 9/2 }],
       answer: 3,
@@ -82,7 +82,7 @@
       check: N => N.limit(x => (1-Math.cos(3*x))/(x*x), 0)
     },
     {
-      id: 'lim-11', topic: 'limit', difficulty: 1,
+      id: 'lim-11', topic: 'limit', difficulty: 1, concepts: ['lim.sub'],
       stem: '多項式在各點皆連續，求 $\\lim_{x\\to-1}(x^3-2x+4)$。',
       choices: [{ tex: '1', value: 1 }, { tex: '5', value: 5 }, { tex: '7', value: 7 }, { tex: '3', value: 3 }],
       answer: 1,
@@ -90,7 +90,7 @@
       check: N => N.limit(x => x*x*x-2*x+4, -1)
     },
     {
-      id: 'lim-12', topic: 'limit', difficulty: 1,
+      id: 'lim-12', topic: 'limit', difficulty: 1, concepts: ['lim.sub'],
       stem: '求 $\\lim_{x\\to2}\\frac{x+1}{x^2+2}$，此處分母不為零。',
       choices: [{ tex: '2', value: 2 }, { tex: '1', value: 1 }, { tex: '\\frac12', value: 1/2 }, { tex: '\\frac34', value: 3/4 }],
       answer: 2,
@@ -98,7 +98,7 @@
       check: N => N.limit(x => (x+1)/(x*x+2), 2)
     },
     {
-      id: 'lim-13', topic: 'limit', difficulty: 1,
+      id: 'lim-13', topic: 'limit', difficulty: 1, concepts: ['lim.simplify'],
       stem: '先將分子通分，求 $\\lim_{x\\to2}\\frac{1/x-1/2}{x-2}$。',
       choices: [{ tex: '0', value: 0 }, { tex: '\\frac14', value: 1/4 }, { tex: '-\\frac12', value: -1/2 }, { tex: '-\\frac14', value: -1/4 }],
       answer: 3,
@@ -106,7 +106,7 @@
       check: N => N.limit(x => (1/x-1/2)/(x-2), 2)
     },
     {
-      id: 'lim-14', topic: 'limit', difficulty: 1,
+      id: 'lim-14', topic: 'limit', difficulty: 1, concepts: ['lim.simplify'],
       stem: '利用共軛式求 $\\lim_{x\\to4}\\frac{\\sqrt{x+5}-3}{x-4}$。',
       choices: [{ tex: '\\frac16', value: 1/6 }, { tex: '\\frac13', value: 1/3 }, { tex: '6', value: 6 }, { tex: '0', value: 0 }],
       answer: 0,
@@ -114,7 +114,7 @@
       check: N => N.limit(x => (Math.sqrt(x+5)-3)/(x-4), 4)
     },
     {
-      id: 'lim-15', topic: 'limit', difficulty: 1,
+      id: 'lim-15', topic: 'limit', difficulty: 1, concepts: ['lim.simplify'],
       stem: '分母含根號，求 $\\lim_{x\\to1}\\frac{x-1}{\\sqrt{x}-1}$。',
       choices: [{ tex: '0', value: 0 }, { tex: '2', value: 2 }, { tex: '\\frac12', value: 1/2 }, { tex: '1', value: 1 }],
       answer: 1,
@@ -122,7 +122,7 @@
       check: N => N.limit(x => (x-1)/(Math.sqrt(x)-1), 1)
     },
     {
-      id: 'lim-16', topic: 'limit', difficulty: 1,
+      id: 'lim-16', topic: 'limit', difficulty: 1, concepts: ['lim.special'],
       stem: '角度以弧度計，求兩個正弦的比值極限 $\\lim_{x\\to0}\\frac{\\sin3x}{\\sin2x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '\\frac23', value: 2/3 }, { tex: '\\frac32', value: 3/2 }, { tex: '0', value: 0 }],
       answer: 2,
@@ -130,7 +130,7 @@
       check: N => N.limit(x => Math.sin(3*x)/Math.sin(2*x), 0)
     },
     {
-      id: 'lim-17', topic: 'limit', difficulty: 1,
+      id: 'lim-17', topic: 'limit', difficulty: 1, concepts: ['lim.infinity'],
       stem: '分母次數較高時，$\\lim_{x\\to+\\infty}\\frac{2x+1}{x^2+4}$ 為何？',
       choices: [{ tex: '2', value: 2 }, { tex: '\\frac14', value: 1/4 }, { tex: '+\\infty', value: '+inf' }, { tex: '0', value: 0 }],
       answer: 3,
@@ -138,7 +138,7 @@
       check: N => N.limitInf(x => (2*x+1)/(x*x+4))
     },
     {
-      id: 'lim-18', topic: 'limit', difficulty: 1,
+      id: 'lim-18', topic: 'limit', difficulty: 1, concepts: ['lim.infinity'],
       stem: '曲線 $y=\\frac{\\sqrt{9x^2+1}}{x}$ 在 $x\\to+\\infty$ 時的水平漸近線為何？',
       choices: [{ tex: 'y=3', value: 3 }, { tex: 'y=9', value: 9 }, { tex: 'y=-3', value: -3 }, { tex: 'y=0', value: 0 }],
       answer: 0,
@@ -146,7 +146,7 @@
       check: N => N.limitInf(x => Math.sqrt(9*x*x+1)/x)
     },
     {
-      id: 'lim-19', topic: 'limit', difficulty: 1,
+      id: 'lim-19', topic: 'limit', difficulty: 1, concepts: ['lim.onesided'],
       stem: '只由左邊接近，求 $\\lim_{x\\to2^-}\\frac{|x-2|}{x-2}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '-1', value: -1 }, { tex: '0', value: 0 }, { tex: '\\text{不存在}', value: 'DNE' }],
       answer: 1,
@@ -154,7 +154,7 @@
       check: N => N.limit(x => Math.abs(x-2)/(x-2), 2, 'left')
     },
     {
-      id: 'lim-20', topic: 'limit', difficulty: 1,
+      id: 'lim-20', topic: 'limit', difficulty: 1, concepts: ['lim.onesided'],
       stem: '設 $f(x)=x+1$（$x<0$）、$f(x)=x^2+2$（$x>0$），而 $f(0)=9$。求 $\\lim_{x\\to0^+}f(x)$。',
       choices: [{ tex: '9', value: 9 }, { tex: '1', value: 1 }, { tex: '2', value: 2 }, { tex: '\\text{不存在}', value: 'DNE' }],
       answer: 2,
@@ -162,7 +162,7 @@
       check: N => N.limit(x => x < 0 ? x+1 : x*x+2, 0, 'right')
     },
     {
-      id: 'lim-21', topic: 'limit', difficulty: 1,
+      id: 'lim-21', topic: 'limit', difficulty: 1, concepts: ['lim.infinity', 'lim.onesided'],
       stem: '求 $\\lim_{x\\to3}\\frac1{(x-3)^2}$，此題考慮左右兩側。',
       choices: [{ tex: '0', value: 0 }, { tex: '-\\infty', value: '-inf' }, { tex: '\\text{不存在}', value: 'DNE' }, { tex: '+\\infty', value: '+inf' }],
       answer: 3,
@@ -170,7 +170,7 @@
       check: N => N.limit(x => 1/(x-3)**2, 3)
     },
     {
-      id: 'lim-22', topic: 'limit', difficulty: 1,
+      id: 'lim-22', topic: 'limit', difficulty: 1, concepts: ['lim.squeeze'],
       stem: '已知 $0<|x|<1$ 時 $-x^2\\le f(x)\\le x^2$，由夾擠定理可得 $\\lim_{x\\to0}f(x)$ 為何？',
       choices: [{ tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: '-1', value: -1 }, { tex: '\\text{無法確定}', value: 'unknown' }],
       answer: 0,
@@ -181,7 +181,7 @@
       }
     },
     {
-      id: 'lim-23', topic: 'limit', difficulty: 1,
+      id: 'lim-23', topic: 'limit', difficulty: 1, concepts: ['lim.ivt', 'lim.sub'],
       stem: '對連續函數 $f(x)=x^3+x-3$，下列哪個開區間可由端點異號及中間值定理保證至少一根？',
       choices: [{ tex: '(-2,-1)', value: [-2,-1] }, { tex: '(1,2)', value: [1,2] }, { tex: '(-1,0)', value: [-1,0] }, { tex: '(0,1)', value: [0,1] }],
       answer: 1,
@@ -192,7 +192,7 @@
       }
     },
     {
-      id: 'lim-24', topic: 'limit', difficulty: 1,
+      id: 'lim-24', topic: 'limit', difficulty: 1, concepts: ['lim.special'],
       stem: '當正整數 $n$ 趨向無窮大，求 $\\lim_{n\\to\\infty}(1+1/n)^n$。',
       choices: [{ tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: 'e', value: Math.E }, { tex: '+\\infty', value: '+inf' }],
       answer: 2,
@@ -200,7 +200,7 @@
       check: N => N.limitInf(n => (1+1/n)**n)
     },
     {
-      id: 'lim-25', topic: 'limit', difficulty: 2,
+      id: 'lim-25', topic: 'limit', difficulty: 2, concepts: ['lim.simplify'],
       stem: '分子可視為平方差，求 $\\lim_{x\\to2}\\frac{x^4-16}{x^2-4}$。',
       choices: [{ tex: '4', value: 4 }, { tex: '0', value: 0 }, { tex: '16', value: 16 }, { tex: '8', value: 8 }],
       answer: 3,
@@ -208,7 +208,7 @@
       check: N => N.limit(x => (x**4-16)/(x*x-4), 2)
     },
     {
-      id: 'lim-26', topic: 'limit', difficulty: 2,
+      id: 'lim-26', topic: 'limit', difficulty: 2, concepts: ['lim.simplify'],
       stem: '求含兩個根式的極限 $\\lim_{x\\to0}\\frac{\\sqrt{1+x}-\\sqrt{1-x}}{x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '\\frac12', value: 1/2 }, { tex: '2', value: 2 }],
       answer: 0,
@@ -216,7 +216,7 @@
       check: N => N.limit(x => (Math.sqrt(1+x)-Math.sqrt(1-x))/x, 0)
     },
     {
-      id: 'lim-27', topic: 'limit', difficulty: 2,
+      id: 'lim-27', topic: 'limit', difficulty: 2, concepts: ['lim.special', 'lim.simplify'],
       stem: '角度以弧度計，求 $\\lim_{x\\to0}\\frac{1-\\cos x}{x\\sin x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '\\frac12', value: 1/2 }, { tex: '2', value: 2 }, { tex: '0', value: 0 }],
       answer: 1,
@@ -224,7 +224,7 @@
       check: N => N.limit(x => (1-Math.cos(x))/(x*Math.sin(x)), 0)
     },
     {
-      id: 'lim-28', topic: 'limit', difficulty: 2,
+      id: 'lim-28', topic: 'limit', difficulty: 2, concepts: ['lim.simplify', 'lim.infinity'],
       stem: '求 $\\lim_{x\\to+\\infty}x(\\sqrt{x^2+4}-x)$。',
       choices: [{ tex: '0', value: 0 }, { tex: '4', value: 4 }, { tex: '2', value: 2 }, { tex: '+\\infty', value: '+inf' }],
       answer: 2,
@@ -232,7 +232,7 @@
       check: N => N.limitInf(x => x*(Math.sqrt(x*x+4)-x))
     },
     {
-      id: 'lim-29', topic: 'limit', difficulty: 2,
+      id: 'lim-29', topic: 'limit', difficulty: 2, concepts: ['lim.infinity', 'lim.onesided'],
       stem: '注意 $x$ 的符號，求 $\\lim_{x\\to-\\infty}\\frac{\\sqrt{4x^2+x}}{x}$。',
       choices: [{ tex: '2', value: 2 }, { tex: '4', value: 4 }, { tex: '0', value: 0 }, { tex: '-2', value: -2 }],
       answer: 3,
@@ -240,7 +240,7 @@
       check: N => N.limitInf(t => Math.sqrt(4*t*t-t)/(-t))
     },
     {
-      id: 'lim-30', topic: 'limit', difficulty: 2,
+      id: 'lim-30', topic: 'limit', difficulty: 2, concepts: ['lim.sub', 'lim.onesided'],
       stem: '設 $f(x)=ax+1$（$x<2$）、$f(x)=x^2-ax$（$x\\ge2$）。若 $f$ 在 $2$ 連續，$a$ 為何？',
       choices: [{ tex: '\\frac34', value: 3/4 }, { tex: '\\frac32', value: 3/2 }, { tex: '-\\frac34', value: -3/4 }, { tex: '1', value: 1 }],
       answer: 0,
@@ -248,7 +248,7 @@
       check: N => N.roots(a => N.limit(x => a*x+1, 2, 'left')-N.limit(x => x*x-a*x, 2, 'right'), 0, 2)[0]
     },
     {
-      id: 'lim-31', topic: 'limit', difficulty: 2,
+      id: 'lim-31', topic: 'limit', difficulty: 2, concepts: ['lim.sub', 'lim.special'],
       stem: '設 $f(x)=\\sin x/x$（$x\\ne0$），但 $f(0)=0$，角度以弧度計。$x=0$ 是哪一類點？',
       choices: [{ tex: '\\text{連續點}', value: 'continuous' }, { tex: '\\text{可去不連續點}', value: 'removable' }, { tex: '\\text{跳躍不連續點}', value: 'jump' }, { tex: '\\text{無窮不連續點}', value: 'infinite' }],
       answer: 1,
@@ -262,7 +262,7 @@
       }
     },
     {
-      id: 'lim-32', topic: 'limit', difficulty: 2,
+      id: 'lim-32', topic: 'limit', difficulty: 2, concepts: ['lim.sub', 'lim.onesided'],
       stem: '函數 $f(x)=e^x$（$x<0$）、$f(x)=2+x$（$x\\ge0$）在 $0$ 的不連續類型為何？',
       choices: [{ tex: '\\text{可去不連續}', value: 'removable' }, { tex: '\\text{無窮不連續}', value: 'infinite' }, { tex: '\\text{跳躍不連續}', value: 'jump' }, { tex: '\\text{其實連續}', value: 'continuous' }],
       answer: 2,
@@ -276,7 +276,7 @@
       }
     },
     {
-      id: 'lim-33', topic: 'limit', difficulty: 2,
+      id: 'lim-33', topic: 'limit', difficulty: 2, concepts: ['lim.ivt', 'lim.sub'],
       stem: '角度以弧度計。用中間值定理判斷，方程 $\\cos x=x$ 的根可保證落在哪個開區間？',
       choices: [{ tex: '(-2,-1)', value: [-2,-1] }, { tex: '(-1,0)', value: [-1,0] }, { tex: '(1,2)', value: [1,2] }, { tex: '(0,1)', value: [0,1] }],
       answer: 3,
@@ -287,7 +287,7 @@
       }
     },
     {
-      id: 'lim-34', topic: 'limit', difficulty: 2,
+      id: 'lim-34', topic: 'limit', difficulty: 2, concepts: ['lim.special'],
       stem: '對整數 $n>1$，求 $\\lim_{n\\to\\infty}\\left(\\frac{1+1/n}{1-1/n}\\right)^n$。',
       choices: [{ tex: 'e^2', value: Math.exp(2) }, { tex: '1', value: 1 }, { tex: 'e', value: Math.E }, { tex: 'e^{-2}', value: Math.exp(-2) }],
       answer: 0,
@@ -295,7 +295,7 @@
       check: N => N.limitInf(n => ((1+1/n)/(1-1/n))**n)
     },
     {
-      id: 'lim-35', topic: 'limit', difficulty: 2,
+      id: 'lim-35', topic: 'limit', difficulty: 2, concepts: ['lim.squeeze'],
       stem: '已知 $0<|x|<1$ 時 $0\\le h(x)\\le1$。即使 $h$ 可能振盪，$\\lim_{x\\to0}xh(x)$ 仍為何？',
       choices: [{ tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '-1', value: -1 }, { tex: '\\text{無法確定}', value: 'unknown' }],
       answer: 1,
@@ -306,7 +306,7 @@
       }
     },
     {
-      id: 'lim-36', topic: 'limit', difficulty: 2,
+      id: 'lim-36', topic: 'limit', difficulty: 2, concepts: ['lim.sub', 'lim.onesided'],
       stem: '已知 $a>0$，且 $f(x)=ax+2$（$x<0$）、$f(x)=(a^2+1)e^x$（$x\\ge0$）。若 $f$ 在 $0$ 連續，求 $a$。',
       choices: [{ tex: '-1', value: -1 }, { tex: '\\sqrt2', value: Math.sqrt(2) }, { tex: '1', value: 1 }, { tex: '0', value: 0 }],
       answer: 2,
@@ -314,7 +314,7 @@
       check: N => N.roots(a => N.limit(x => a*x+2, 0, 'left')-N.limit(x => (a*a+1)*Math.exp(x), 0, 'right'), 0, 2)[0]
     },
     {
-      id: 'lim-37', topic: 'limit', difficulty: 3,
+      id: 'lim-37', topic: 'limit', difficulty: 3, concepts: ['lim.simplify'],
       stem: '一次項也被扣除時，求 $\\lim_{x\\to0}\\frac{\\sqrt{1+x}-1-x/2}{x^2}$。',
       choices: [{ tex: '0', value: 0 }, { tex: '\\frac18', value: 1/8 }, { tex: '-\\frac14', value: -1/4 }, { tex: '-\\frac18', value: -1/8 }],
       answer: 3,
@@ -322,7 +322,7 @@
       check: N => N.limit(x => (Math.sqrt(1+x)-1-x/2)/(x*x), 0)
     },
     {
-      id: 'lim-38', topic: 'limit', difficulty: 3,
+      id: 'lim-38', topic: 'limit', difficulty: 3, concepts: ['lim.special', 'lim.simplify'],
       stem: '角度以弧度計，求 $\\lim_{x\\to0}\\frac{\\tan x-\\sin x}{x^3}$。',
       choices: [{ tex: '\\frac12', value: 1/2 }, { tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: '-\\frac12', value: -1/2 }],
       answer: 0,
@@ -330,7 +330,7 @@
       check: N => N.limit(x => (Math.tan(x)-Math.sin(x))/x**3, 0)
     },
     {
-      id: 'lim-39', topic: 'limit', difficulty: 3,
+      id: 'lim-39', topic: 'limit', difficulty: 3, concepts: ['lim.special'],
       stem: '角度以弧度計，求消去一次項後的極限 $\\lim_{x\\to0}\\frac{\\sin x-x\\cos x}{x^3}$。',
       choices: [{ tex: '\\frac16', value: 1/6 }, { tex: '\\frac13', value: 1/3 }, { tex: '-\\frac13', value: -1/3 }, { tex: '0', value: 0 }],
       answer: 1,
@@ -338,7 +338,7 @@
       check: N => N.limit(x => (Math.sin(x)-x*Math.cos(x))/x**3, 0)
     },
     {
-      id: 'lim-40', topic: 'limit', difficulty: 3,
+      id: 'lim-40', topic: 'limit', difficulty: 3, concepts: ['lim.special'],
       stem: '求標準 $e$ 極限的誤差倍率 $\\lim_{n\\to\\infty}n\\left(\\frac{(1+1/n)^n}{e}-1\\right)$。',
       choices: [{ tex: '0', value: 0 }, { tex: '\\frac12', value: 1/2 }, { tex: '-\\frac12', value: -1/2 }, { tex: '-1', value: -1 }],
       answer: 2,
@@ -346,7 +346,7 @@
       check: N => N.limitInf(n => n*((1+1/n)**n/Math.E-1))
     },
     {
-      id: 'lim-41', topic: 'limit', difficulty: 3,
+      id: 'lim-41', topic: 'limit', difficulty: 3, concepts: ['lim.special'],
       stem: '角度以弧度計，求 $\\lim_{x\\to0}\\frac{\\ln(\\cos x)}{x^2}$。',
       choices: [{ tex: '\\frac12', value: 1/2 }, { tex: '-1', value: -1 }, { tex: '0', value: 0 }, { tex: '-\\frac12', value: -1/2 }],
       answer: 3,
@@ -354,7 +354,7 @@
       check: N => N.limit(x => Math.log(Math.cos(x))/(x*x), 0)
     },
     {
-      id: 'lim-42', topic: 'limit', difficulty: 3,
+      id: 'lim-42', topic: 'limit', difficulty: 3, concepts: ['lim.simplify', 'lim.infinity'],
       stem: '兩個根式各自發散時，求 $\\lim_{x\\to+\\infty}(\\sqrt{x^2+3x}-\\sqrt{x^2-x})$。',
       choices: [{ tex: '2', value: 2 }, { tex: '4', value: 4 }, { tex: '1', value: 1 }, { tex: '0', value: 0 }],
       answer: 0,
@@ -362,7 +362,7 @@
       check: N => N.limitInf(x => Math.sqrt(x*x+3*x)-Math.sqrt(x*x-x))
     },
     {
-      id: 'lim-43', topic: 'limit', difficulty: 3,
+      id: 'lim-43', topic: 'limit', difficulty: 3, concepts: ['lim.infinity', 'lim.simplify'],
       stem: '函數 $f(x)=\\frac{x^2-1}{(x-1)(x+2)}$ 的所有垂直漸近線為何？',
       choices: [{ tex: 'x=1', value: [1] }, { tex: 'x=-2', value: [-2] }, { tex: 'x=-2\\text{ 與 }x=1', value: [-2,1] }, { tex: '\\text{沒有垂直漸近線}', value: [] }],
       answer: 1,
@@ -373,7 +373,7 @@
       }
     },
     {
-      id: 'lim-44', topic: 'limit', difficulty: 3,
+      id: 'lim-44', topic: 'limit', difficulty: 3, concepts: ['lim.onesided'],
       stem: '角度以弧度計，利用趨零的不同數列判斷 $\\lim_{x\\to0}\\sin(1/x)$。',
       choices: [{ tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: '\\text{不存在}', value: 'DNE' }, { tex: '-1', value: -1 }],
       answer: 2,
@@ -386,7 +386,7 @@
       }
     },
     {
-      id: 'lim-45', topic: 'limit', difficulty: 3,
+      id: 'lim-45', topic: 'limit', difficulty: 3, concepts: ['lim.sub', 'lim.onesided'],
       stem: '設 $f(x)=ax+b$（$x<1$）、$f(x)=x^2+ax$（$x>1$），且 $f(1)=4$。要在 $1$ 連續，$(a,b)$ 應為何？',
       choices: [{ tex: '(4,0)', value: [4,0] }, { tex: '(1,3)', value: [1,3] }, { tex: '(3,-1)', value: [3,-1] }, { tex: '(3,1)', value: [3,1] }],
       answer: 3,
@@ -398,7 +398,7 @@
       }
     },
     {
-      id: 'lim-46', topic: 'limit', difficulty: 3,
+      id: 'lim-46', topic: 'limit', difficulty: 3, concepts: ['lim.special', 'lim.sub'],
       stem: '角度以弧度計。若 $g(x)=\\frac{e^{2x}-1}{\\sin3x}$（$x\\ne0$）要以 $g(0)=k$ 連續延伸，$k$ 為何？',
       choices: [{ tex: '\\frac23', value: 2/3 }, { tex: '\\frac32', value: 3/2 }, { tex: '2', value: 2 }, { tex: '0', value: 0 }],
       answer: 0,
@@ -406,7 +406,7 @@
       check: N => N.limit(x => (Math.exp(2*x)-1)/Math.sin(3*x), 0)
     },
     {
-      id: 'lim-47', topic: 'limit', difficulty: 3,
+      id: 'lim-47', topic: 'limit', difficulty: 3, concepts: ['lim.ivt', 'lim.sub'],
       stem: '在定義域 $x>0$ 中，以中間值定理判斷 $\\ln x+x^2=4$ 的根可保證位於哪個開區間？',
       choices: [{ tex: '(\\frac14,\\frac12)', value: [1/4,1/2] }, { tex: '(1,2)', value: [1,2] }, { tex: '(\\frac12,1)', value: [1/2,1] }, { tex: '(2,3)', value: [2,3] }],
       answer: 1,
@@ -417,7 +417,7 @@
       }
     },
     {
-      id: 'lim-48', topic: 'limit', difficulty: 3,
+      id: 'lim-48', topic: 'limit', difficulty: 3, concepts: ['lim.special'],
       stem: '求指數增量的數列極限 $\\lim_{n\\to\\infty}n(e^{1/n}-1)$。',
       choices: [{ tex: 'e', value: Math.E }, { tex: '+\\infty', value: '+inf' }, { tex: '1', value: 1 }, { tex: '0', value: 0 }],
       answer: 2,
@@ -425,7 +425,7 @@
       check: N => N.limitInf(n => n*(Math.exp(1/n)-1))
     },
     {
-      id: 'lim-49', topic: 'limit', difficulty: 3,
+      id: 'lim-49', topic: 'limit', difficulty: 3, concepts: ['lim.special'],
       stem: '角度以弧度計，求雙側冪次極限 $\\lim_{x\\to0}(1+\\sin x)^{1/x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: 'e^{-1}', value: Math.exp(-1) }, { tex: '0', value: 0 }, { tex: 'e', value: Math.E }],
       answer: 3,
@@ -433,7 +433,7 @@
       check: N => N.limit(x => (1+Math.sin(x))**(1/x), 0)
     },
     {
-      id: 'lim-50', topic: 'limit', difficulty: 3,
+      id: 'lim-50', topic: 'limit', difficulty: 3, concepts: ['lim.special', 'lim.simplify'],
       stem: '角度以弧度計，結合三角恆等式與有理化，求 $\\lim_{x\\to0}\\frac{1-\\cos2x}{\\sqrt{1+x^2}-1}$。',
       choices: [{ tex: '4', value: 4 }, { tex: '2', value: 2 }, { tex: '1', value: 1 }, { tex: '0', value: 0 }],
       answer: 0,

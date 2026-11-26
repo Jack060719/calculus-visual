@@ -5,7 +5,9 @@
 // 規則（node tools/verify.js 會檢查）：
 //   1. 1～2 個代號，不可重複；第一個放「答錯最可能卡住的地方」。
 //   2. 代號必須在下面的清單裡，而且要屬於這一題的主題（導數題只能用 der. 開頭的代號）。
-//   3. 還沒標的題目可以先不加 concepts；網站照常運作，只是不會算進「常錯觀念」。
+//   3. 每一題都要標：node tools/verify.js 預設會列出還沒標的題目並失敗。
+//      還在標註中、只想先檢查其他項目時，用 node tools/verify.js --allow-untagged。
+//      （網站本身不受影響：沒標的題照常出題，只是不會算進「常錯觀念」。）
 //
 // 代號開頭和題目 id 一樣（lim／der／dap／int／itc／ser），方便對照。
 // 中文名稱之後要改直接改 label；錯題本只存題目 id，改名稱不用搬資料。
@@ -21,7 +23,9 @@
     { id: 'lim.special', topic: 'limit', label: '特殊極限（sin x / x、e）' },
     { id: 'lim.infinity', topic: 'limit', label: '無窮遠極限與漸近線' },
     { id: 'lim.squeeze', topic: 'limit', label: '夾擠定理' },
+    { id: 'lim.ivt', topic: 'limit', label: '中間值定理' },
     // 導數
+    { id: 'der.def', topic: 'derivative', label: '導數定義（差商極限）' },
     { id: 'der.basic', topic: 'derivative', label: '基本求導公式' },
     { id: 'der.product', topic: 'derivative', label: '乘法與除法法則' },
     { id: 'der.chain', topic: 'derivative', label: '連鎖律' },
@@ -53,7 +57,8 @@
     { id: 'itc.radical', topic: 'integral-tech', label: '根式代換' },
     // 級數與泰勒
     { id: 'ser.geometric', topic: 'series', label: '等比級數' },
-    { id: 'ser.tests', topic: 'series', label: '審斂法（比值／積分／p 級數）' },
+    { id: 'ser.tests', topic: 'series', label: '審斂法（通項／比較／比值／根值／積分／p 級數）' },
+    { id: 'ser.telescope', topic: 'series', label: '望遠鏡級數' },
     { id: 'ser.alternating', topic: 'series', label: '交錯級數' },
     { id: 'ser.radius', topic: 'series', label: '收斂區間與半徑' },
     { id: 'ser.taylor', topic: 'series', label: '泰勒與麥克勞林展開' },

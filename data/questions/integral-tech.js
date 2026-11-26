@@ -2,7 +2,7 @@
   var Calc = root.Calc = root.Calc || {};
   var questions = [
     {
-      id: 'itc-01', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-01', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '求 $\\int x(1+x^2)^4\\,dx$。',
       choices: [
         { tex: '\\frac{(1+x^2)^5}{5}+C', value: x => (1+x*x)**5/5 },
@@ -15,7 +15,7 @@
       check: N => x => N.integrate(t => t*(1+t*t)**4, 0, x)
     },
     {
-      id: 'itc-02', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-02', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '求 $\\int e^{\\sin x}\\cos x\\,dx$。',
       choices: [
         { tex: 'e^{\\cos x}+C', value: x => Math.exp(Math.cos(x)) },
@@ -28,7 +28,7 @@
       check: N => x => N.integrate(t => Math.exp(Math.sin(t))*Math.cos(t), 0, x)
     },
     {
-      id: 'itc-03', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-03', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '在 $x>0$ 上，求 $\\int\\frac{(\\ln x)^2}{x}\\,dx$。',
       choices: [
         { tex: '\\frac{(\\ln x)^3}{3}+C', value: x => Math.log(x)**3/3 },
@@ -41,7 +41,7 @@
       check: N => x => N.integrate(t => Math.log(t)**2/t, 1, x)
     },
     {
-      id: 'itc-04', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-04', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '求 $\\int\\frac{e^x}{1+e^x}\\,dx$。',
       choices: [
         { tex: '\\frac{1}{1+e^x}+C', value: x => 1/(1+Math.exp(x)) },
@@ -54,7 +54,7 @@
       check: N => x => N.integrate(t => Math.exp(t)/(1+Math.exp(t)), 0, x)
     },
     {
-      id: 'itc-05', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-05', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '求 $\\int\\frac{\\sin x}{\\sqrt{2+\\cos x}}\\,dx$。',
       choices: [
         { tex: '2\\sqrt{2+\\cos x}+C', value: x => 2*Math.sqrt(2+Math.cos(x)) },
@@ -67,7 +67,7 @@
       check: N => x => N.integrate(t => Math.sin(t)/Math.sqrt(2+Math.cos(t)), 0, x)
     },
     {
-      id: 'itc-06', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-06', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '在 $x>1$ 上，求 $\\int\\frac{1}{x\\ln x}\\,dx$。',
       choices: [
         { tex: '\\ln x+C', value: x => Math.log(x) },
@@ -80,7 +80,7 @@
       check: N => x => N.integrate(t => 1/(t*Math.log(t)), 2, x)
     },
     {
-      id: 'itc-07', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-07', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '在 $-3<x<3$ 上，求 $\\int\\frac{x}{\\sqrt{9-x^2}}\\,dx$。',
       choices: [
         { tex: '-\\sqrt{9-x^2}+C', value: x => -Math.sqrt(9-x*x) },
@@ -93,7 +93,7 @@
       check: N => x => N.integrate(t => t/Math.sqrt(9-t*t), 0, x)
     },
     {
-      id: 'itc-08', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-08', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '求 $\\int x^2\\cos(x^3)\\,dx$。',
       choices: [
         { tex: '\\sin(x^3)+C', value: x => Math.sin(x**3) },
@@ -106,7 +106,7 @@
       check: N => x => N.integrate(t => t*t*Math.cos(t**3), 0, x)
     },
     {
-      id: 'itc-09', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-09', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '令 $u=x^2$ 計算 $\\int_0^1 2xe^{x^2}\\,dx$，其值為何？',
       choices: [
         { tex: '\\frac{e-1}{2}', value: (Math.E-1)/2 },
@@ -119,7 +119,7 @@
       check: N => N.integrate(x => 2*x*Math.exp(x*x), 0, 1)
     },
     {
-      id: 'itc-10', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-10', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '把上下限一併換成 $u=1+\\ln x$ 後，$\\int_1^e\\frac{(1+\\ln x)^3}{x}\\,dx$ 等於多少？',
       choices: [
         { tex: '4', value: 4 },
@@ -132,7 +132,7 @@
       check: N => N.integrate(x => (1+Math.log(x))**3/x, 1, Math.E)
     },
     {
-      id: 'itc-11', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-11', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '以 $u=\\cos x$ 換元，求 $\\int_0^{\\pi/2}\\sin x\\cos^2x\\,dx$。',
       choices: [
         { tex: '\\frac13', value: 1/3 },
@@ -145,7 +145,7 @@
       check: N => N.integrate(x => Math.sin(x)*Math.cos(x)**2, 0, Math.PI/2)
     },
     {
-      id: 'itc-12', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-12', topic: 'integral-tech', difficulty: 1, concepts: ['itc.sub'],
       stem: '計算 $\\int_0^1\\frac{x}{(1+x^2)^2}\\,dx$。',
       choices: [
         { tex: '\\frac12', value: 1/2 },
@@ -158,7 +158,7 @@
       check: N => N.integrate(x => x/(1+x*x)**2, 0, 1)
     },
     {
-      id: 'itc-13', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-13', topic: 'integral-tech', difficulty: 1, concepts: ['itc.parts'],
       stem: '用分部積分求 $\\int x\\cos x\\,dx$。',
       choices: [
         { tex: 'x\\sin x-\\cos x+C', value: x => x*Math.sin(x)-Math.cos(x) },
@@ -171,7 +171,7 @@
       check: N => x => N.integrate(t => t*Math.cos(t), 0, x)
     },
     {
-      id: 'itc-14', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-14', topic: 'integral-tech', difficulty: 1, concepts: ['itc.parts'],
       stem: '在 $x>0$ 上，求 $\\int\\ln x\\,dx$。',
       choices: [
         { tex: 'x\\ln x+C', value: x => x*Math.log(x) },
@@ -184,7 +184,7 @@
       check: N => x => N.integrate(Math.log, 1, x)
     },
     {
-      id: 'itc-15', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-15', topic: 'integral-tech', difficulty: 1, concepts: ['itc.parts'],
       stem: '計算 $\\int_0^1 xe^{-x}\\,dx$。',
       choices: [
         { tex: '1-\\frac2e', value: 1-2/Math.E },
@@ -197,7 +197,7 @@
       check: N => N.integrate(x => x*Math.exp(-x), 0, 1)
     },
     {
-      id: 'itc-16', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-16', topic: 'integral-tech', difficulty: 1, concepts: ['itc.trig'],
       stem: '用降冪公式求 $\\int\\sin^2x\\,dx$。',
       choices: [
         { tex: '\\frac{x}{2}+\\frac{\\sin2x}{4}+C', value: x => x/2+Math.sin(2*x)/4 },
@@ -210,7 +210,7 @@
       check: N => x => N.integrate(t => Math.sin(t)**2, 0, x)
     },
     {
-      id: 'itc-17', topic: 'integral-tech', difficulty: 1,
+      id: 'itc-17', topic: 'integral-tech', difficulty: 1, concepts: ['itc.partial'],
       stem: '在 $x>-1$ 上，求 $\\int\\frac{1}{(x+1)(x+2)}\\,dx$。',
       choices: [
         { tex: '\\ln((x+1)(x+2))+C', value: x => Math.log((x+1)*(x+2)) },
@@ -223,7 +223,7 @@
       check: N => x => N.integrate(t => 1/((t+1)*(t+2)), 0, x)
     },
     {
-      id: 'itc-18', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-18', topic: 'integral-tech', difficulty: 2, concepts: ['itc.sub'],
       stem: '求 $\\int\\frac{x^3}{1+x^2}\\,dx$。',
       choices: [
         { tex: '\\frac{x^2}{2}+\\frac12\\ln(1+x^2)+C', value: x => x*x/2+Math.log(1+x*x)/2 },
@@ -236,7 +236,7 @@
       check: N => x => N.integrate(t => t**3/(1+t*t), 0, x)
     },
     {
-      id: 'itc-19', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-19', topic: 'integral-tech', difficulty: 2, concepts: ['itc.radical'],
       stem: '在 $x>0$ 上，求 $\\int\\frac{\\sqrt{x}}{1+\\sqrt{x}}\\,dx$。',
       choices: [
         { tex: 'x-2\\sqrt{x}+2\\ln(1+\\sqrt{x})+C', value: x => x-2*Math.sqrt(x)+2*Math.log(1+Math.sqrt(x)) },
@@ -249,7 +249,7 @@
       check: N => x => N.integrate(t => Math.sqrt(t)/(1+Math.sqrt(t)), 1, x)
     },
     {
-      id: 'itc-20', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-20', topic: 'integral-tech', difficulty: 2, concepts: ['itc.sub'],
       stem: '以 $u=e^x+1$ 計算 $\\int_0^{\\ln2} e^x\\sqrt{e^x+1}\\,dx$。',
       choices: [
         { tex: '\\frac23(2\\sqrt2-1)', value: 2*(2*Math.sqrt(2)-1)/3 },
@@ -262,7 +262,7 @@
       check: N => N.integrate(x => Math.exp(x)*Math.sqrt(Math.exp(x)+1), 0, Math.log(2))
     },
     {
-      id: 'itc-21', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-21', topic: 'integral-tech', difficulty: 2, concepts: ['itc.sub'],
       stem: '求 $\\int_0^1 x^3\\sqrt{1+x^2}\\,dx$，注意換元後仍須處理多項式因子。',
       choices: [
         { tex: '\\frac{2\\sqrt2-1}{3}', value: (2*Math.sqrt(2)-1)/3 },
@@ -275,7 +275,7 @@
       check: N => N.integrate(x => x**3*Math.sqrt(1+x*x), 0, 1)
     },
     {
-      id: 'itc-22', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-22', topic: 'integral-tech', difficulty: 2, concepts: ['itc.parts'],
       stem: '求 $\\int\\arctan x\\,dx$。',
       choices: [
         { tex: 'x\\arctan x+\\frac12\\ln(1+x^2)+C', value: x => x*Math.atan(x)+Math.log(1+x*x)/2 },
@@ -288,7 +288,7 @@
       check: N => x => N.integrate(Math.atan, 0, x)
     },
     {
-      id: 'itc-23', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-23', topic: 'integral-tech', difficulty: 2, concepts: ['itc.parts'],
       stem: '計算 $\\int_0^1 x\\ln(1+x)\\,dx$。',
       choices: [
         { tex: '\\frac14', value: 1/4 },
@@ -301,7 +301,7 @@
       check: N => N.integrate(x => x*Math.log(1+x), 0, 1)
     },
     {
-      id: 'itc-24', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-24', topic: 'integral-tech', difficulty: 2, concepts: ['itc.parts'],
       stem: '重複分部積分，求 $\\int x^2e^x\\,dx$。',
       choices: [
         { tex: 'e^x(x^2+2x+2)+C', value: x => Math.exp(x)*(x*x+2*x+2) },
@@ -314,7 +314,7 @@
       check: N => x => N.integrate(t => t*t*Math.exp(t), 0, x)
     },
     {
-      id: 'itc-25', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-25', topic: 'integral-tech', difficulty: 2, concepts: ['itc.parts'],
       stem: '計算 $\\int_0^\\pi x^2\\sin x\\,dx$。',
       choices: [
         { tex: '\\pi^2', value: Math.PI**2 },
@@ -327,7 +327,7 @@
       check: N => N.integrate(x => x*x*Math.sin(x), 0, Math.PI)
     },
     {
-      id: 'itc-26', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-26', topic: 'integral-tech', difficulty: 2, concepts: ['itc.parts'],
       stem: '令 $I=\\int e^x\\sin x\\,dx$，經兩次分部積分消去循環後，$I$ 為何？',
       choices: [
         { tex: 'e^x(\\sin x-\\cos x)+C', value: x => Math.exp(x)*(Math.sin(x)-Math.cos(x)) },
@@ -340,7 +340,7 @@
       check: N => x => N.integrate(t => Math.exp(t)*Math.sin(t), 0, x)
     },
     {
-      id: 'itc-27', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-27', topic: 'integral-tech', difficulty: 2, concepts: ['itc.parts'],
       stem: '利用循環型分部積分，求 $\\int_0^{\\pi/2}e^x\\cos x\\,dx$。',
       choices: [
         { tex: '\\frac{e^{\\pi/2}-1}{2}', value: (Math.exp(Math.PI/2)-1)/2 },
@@ -353,7 +353,7 @@
       check: N => N.integrate(x => Math.exp(x)*Math.cos(x), 0, Math.PI/2)
     },
     {
-      id: 'itc-28', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-28', topic: 'integral-tech', difficulty: 2, concepts: ['itc.partial'],
       stem: '在 $x>0$ 上，求 $\\int\\frac{1}{x(x+1)^2}\\,dx$。',
       choices: [
         { tex: '\\ln\\frac{x}{x+1}-\\frac1{x+1}+C', value: x => Math.log(x/(x+1))-1/(x+1) },
@@ -366,7 +366,7 @@
       check: N => x => N.integrate(t => 1/(t*(t+1)**2), 1, x)
     },
     {
-      id: 'itc-29', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-29', topic: 'integral-tech', difficulty: 2, concepts: ['itc.partial'],
       stem: '將分母分解後，計算 $\\int_0^1\\frac{2x+3}{x^2+3x+2}\\,dx$。',
       choices: [
         { tex: '\\ln6', value: Math.log(6) },
@@ -379,7 +379,7 @@
       check: N => N.integrate(x => (2*x+3)/(x*x+3*x+2), 0, 1)
     },
     {
-      id: 'itc-30', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-30', topic: 'integral-tech', difficulty: 2, concepts: ['itc.trig', 'itc.sub'],
       stem: '保留一個 $\\sin x$ 因子，求 $\\int\\sin^3x\\,dx$。',
       choices: [
         { tex: '-\\cos x-\\frac{\\cos^3x}{3}+C', value: x => -Math.cos(x)-Math.cos(x)**3/3 },
@@ -392,7 +392,7 @@
       check: N => x => N.integrate(t => Math.sin(t)**3, 0, x)
     },
     {
-      id: 'itc-31', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-31', topic: 'integral-tech', difficulty: 2, concepts: ['itc.trig'],
       stem: '求 $\\int_0^{\\pi/2}\\sin^2x\\cos^2x\\,dx$。',
       choices: [
         { tex: '\\frac{\\pi}{16}', value: Math.PI/16 },
@@ -405,7 +405,7 @@
       check: N => N.integrate(x => Math.sin(x)**2*Math.cos(x)**2, 0, Math.PI/2)
     },
     {
-      id: 'itc-32', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-32', topic: 'integral-tech', difficulty: 2, concepts: ['itc.trigsub'],
       stem: '用 $x=2\\tan\\theta$ 求 $\\int\\frac{1}{(x^2+4)^{3/2}}\\,dx$。',
       choices: [
         { tex: '\\frac{x}{\\sqrt{x^2+4}}+C', value: x => x/Math.sqrt(x*x+4) },
@@ -418,7 +418,7 @@
       check: N => x => N.integrate(t => 1/(t*t+4)**1.5, 0, x)
     },
     {
-      id: 'itc-33', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-33', topic: 'integral-tech', difficulty: 2, concepts: ['itc.trigsub'],
       stem: '以 $x=2\\sin\\theta$ 換元，求 $\\int_0^1\\frac{1}{\\sqrt{4-x^2}}\\,dx$。',
       choices: [
         { tex: '\\frac{\\pi}{3}', value: Math.PI/3 },
@@ -431,7 +431,7 @@
       check: N => N.integrate(x => 1/Math.sqrt(4-x*x), 0, 1)
     },
     {
-      id: 'itc-34', topic: 'integral-tech', difficulty: 2,
+      id: 'itc-34', topic: 'integral-tech', difficulty: 2, concepts: ['itc.sub'],
       stem: '在 $x>0$ 上處理 $\\int\\frac{x}{1+x^4}\\,dx$，以下「起手技巧與所得反導函數」配對何者正確？',
       choices: [
         { tex: '\\text{令 }u=x^4\\text{：}\\ \\frac14\\ln(1+x^4)+C', value: x => Math.log(1+x**4)/4 },
@@ -444,7 +444,7 @@
       check: N => x => N.integrate(t => t/(1+t**4), 1, x)
     },
     {
-      id: 'itc-35', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-35', topic: 'integral-tech', difficulty: 3, concepts: ['itc.sub'],
       stem: '在 $x>0$ 上，求 $\\int\\frac{\\ln x}{x(1+(\\ln x)^2)}\\,dx$。',
       choices: [
         { tex: '\\frac12\\ln(1+(\\ln x)^2)+C', value: x => Math.log(1+Math.log(x)**2)/2 },
@@ -457,7 +457,7 @@
       check: N => x => N.integrate(t => Math.log(t)/(t*(1+Math.log(t)**2)), 1, x)
     },
     {
-      id: 'itc-36', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-36', topic: 'integral-tech', difficulty: 3, concepts: ['itc.sub'],
       stem: '連續換元計算 $\\int_0^{\\sqrt{\\ln2}}\\frac{xe^{x^2}}{1+e^{x^2}}\\,dx$。',
       choices: [
         { tex: '\\frac12\\ln3', value: Math.log(3)/2 },
@@ -470,7 +470,7 @@
       check: N => N.integrate(x => x*Math.exp(x*x)/(1+Math.exp(x*x)), 0, Math.sqrt(Math.log(2)))
     },
     {
-      id: 'itc-37', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-37', topic: 'integral-tech', difficulty: 3, concepts: ['itc.parts'],
       stem: '在 $x>0$ 上，重複分部積分求 $\\int(\\ln x)^2\\,dx$。',
       choices: [
         { tex: 'x((\\ln x)^2+2\\ln x+2)+C', value: x => x*(Math.log(x)**2+2*Math.log(x)+2) },
@@ -483,7 +483,7 @@
       check: N => x => N.integrate(t => Math.log(t)**2, 1, x)
     },
     {
-      id: 'itc-38', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-38', topic: 'integral-tech', difficulty: 3, concepts: ['itc.parts'],
       stem: '三次分部積分後，$\\int_0^1 x^3e^x\\,dx$ 的精確值為何？',
       choices: [
         { tex: '6+2e', value: 6+2*Math.E },
@@ -496,7 +496,7 @@
       check: N => N.integrate(x => x**3*Math.exp(x), 0, 1)
     },
     {
-      id: 'itc-39', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-39', topic: 'integral-tech', difficulty: 3, concepts: ['itc.parts'],
       stem: '結合循環型與分部積分，求 $\\int xe^x\\sin x\\,dx$。',
       choices: [
         { tex: '\\frac{e^x}{2}\\bigl(x(\\sin x-\\cos x)+\\cos x\\bigr)+C', value: x => Math.exp(x)*(x*(Math.sin(x)-Math.cos(x))+Math.cos(x))/2 },
@@ -509,7 +509,7 @@
       check: N => x => N.integrate(t => t*Math.exp(t)*Math.sin(t), 0, x)
     },
     {
-      id: 'itc-40', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-40', topic: 'integral-tech', difficulty: 3, concepts: ['itc.parts'],
       stem: '求 $\\int_0^{\\pi/2} xe^x\\cos x\\,dx$。',
       choices: [
         { tex: '\\frac{\\pi e^{\\pi/2}}4', value: Math.PI*Math.exp(Math.PI/2)/4 },
@@ -522,7 +522,7 @@
       check: N => N.integrate(x => x*Math.exp(x)*Math.cos(x), 0, Math.PI/2)
     },
     {
-      id: 'itc-41', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-41', topic: 'integral-tech', difficulty: 3, concepts: ['itc.partial'],
       stem: '計算含不可約二次因子的積分 $\\int_0^1\\frac{1}{(x+1)(x^2+1)}\\,dx$。',
       choices: [
         { tex: '\\frac{\\ln2}{4}-\\frac{\\pi}{8}', value: Math.log(2)/4-Math.PI/8 },
@@ -535,7 +535,7 @@
       check: N => N.integrate(x => 1/((x+1)*(x*x+1)), 0, 1)
     },
     {
-      id: 'itc-42', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-42', topic: 'integral-tech', difficulty: 3, concepts: ['itc.partial'],
       stem: '在 $x>1$ 上，先處理假分式再求 $\\int\\frac{x^2+1}{x-1}\\,dx$。',
       choices: [
         { tex: '\\frac{x^2}{2}+x+\\ln(x-1)+C', value: x => x*x/2+x+Math.log(x-1) },
@@ -548,7 +548,7 @@
       check: N => x => N.integrate(t => (t*t+1)/(t-1), 2, x)
     },
     {
-      id: 'itc-43', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-43', topic: 'integral-tech', difficulty: 3, concepts: ['itc.trig'],
       stem: '利用正弦的奇次方，求 $\\int\\sin^5x\\cos^2x\\,dx$。',
       choices: [
         { tex: '-\\frac{\\cos^3x}{3}+\\frac{2\\cos^5x}{5}-\\frac{\\cos^7x}{7}+C', value: x => -(Math.cos(x)**3)/3+2*Math.cos(x)**5/5-Math.cos(x)**7/7 },
@@ -561,7 +561,7 @@
       check: N => x => N.integrate(t => Math.sin(t)**5*Math.cos(t)**2, 0, x)
     },
     {
-      id: 'itc-44', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-44', topic: 'integral-tech', difficulty: 3, concepts: ['itc.trig'],
       stem: '在 $-\\pi<x<\\pi$ 上，求 $\\int\\frac{\\sin^4x}{1+\\cos x}\\,dx$。',
       choices: [
         { tex: '\\frac{x}{2}-\\frac{\\sin2x}{4}+\\frac{\\sin^3x}{3}+C', value: x => x/2-Math.sin(2*x)/4+Math.sin(x)**3/3 },
@@ -574,7 +574,7 @@
       check: N => x => N.integrate(t => Math.sin(t)**4/(1+Math.cos(t)), 0, x)
     },
     {
-      id: 'itc-45', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-45', topic: 'integral-tech', difficulty: 3, concepts: ['itc.trigsub', 'itc.trig'],
       stem: '在 $-3<x<3$ 上，以三角代換求 $\\int\\sqrt{9-x^2}\\,dx$。',
       choices: [
         { tex: '\\frac{x}{2}\\sqrt{9-x^2}-\\frac92\\arcsin(x/3)+C', value: x => x*Math.sqrt(9-x*x)/2-9*Math.asin(x/3)/2 },
@@ -587,7 +587,7 @@
       check: N => x => N.integrate(t => Math.sqrt(9-t*t), 0, x)
     },
     {
-      id: 'itc-46', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-46', topic: 'integral-tech', difficulty: 3, concepts: ['itc.trigsub'],
       stem: '在 $x>1$ 上，求 $\\int\\frac{1}{x^2\\sqrt{x^2-1}}\\,dx$。',
       choices: [
         { tex: '-\\frac{\\sqrt{x^2-1}}x+C', value: x => -Math.sqrt(x*x-1)/x },
@@ -600,7 +600,7 @@
       check: N => x => N.integrate(t => 1/(t*t*Math.sqrt(t*t-1)), 2, x)
     },
     {
-      id: 'itc-47', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-47', topic: 'integral-tech', difficulty: 3, concepts: ['itc.trigsub', 'itc.trig'],
       stem: '以三角代換計算 $\\int_0^1\\frac{x^2}{\\sqrt{4-x^2}}\\,dx$，並正確換上下限。',
       choices: [
         { tex: '\\frac{\\pi}{3}-\\frac{\\sqrt3}{2}', value: Math.PI/3-Math.sqrt(3)/2 },
@@ -613,7 +613,7 @@
       check: N => N.integrate(x => x*x/Math.sqrt(4-x*x), 0, 1)
     },
     {
-      id: 'itc-48', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-48', topic: 'integral-tech', difficulty: 3, concepts: ['itc.trigsub'],
       stem: '在 $x>1$ 上，求 $\\int\\frac{\\sqrt{x^2-1}}x\\,dx$。',
       choices: [
         { tex: '\\sqrt{x^2-1}+\\arccos(1/x)+C', value: x => Math.sqrt(x*x-1)+Math.acos(1/x) },
@@ -626,7 +626,7 @@
       check: N => x => N.integrate(t => Math.sqrt(t*t-1)/t, 2, x)
     },
     {
-      id: 'itc-49', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-49', topic: 'integral-tech', difficulty: 3, concepts: ['itc.sub', 'itc.parts'],
       stem: '對 $x>0$ 的 $\\int x\\ln(1+x^2)\\,dx$，想先換元再分部積分，下列第一步何者正確？',
       choices: [
         { tex: 'u=1+x^2,\\quad\\int\\ln u\\,du', value: u => Math.log(u) },
@@ -642,7 +642,7 @@
       }
     },
     {
-      id: 'itc-50', topic: 'integral-tech', difficulty: 3,
+      id: 'itc-50', topic: 'integral-tech', difficulty: 3, concepts: ['itc.parts'],
       stem: '在 $x>0$ 上計算 $\\int\\frac{\\ln x}{x^2}\\,dx$，以下「技巧與反導函數」配對何者正確？',
       choices: [
         { tex: '\\text{直接套冪次公式：}\\ -\\frac{\\ln x}{x}+C', value: x => -Math.log(x)/x },
