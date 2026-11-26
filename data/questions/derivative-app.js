@@ -2,7 +2,7 @@
   var Calc = root.Calc = root.Calc || {};
   var questions = [
     {
-      id: 'dap-01', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-01', topic: 'derivative-app', difficulty: 1, concepts: ['dap.tangent'],
       stem: '曲線 $y=x^2+3x$ 在 $x=1$ 處的切線斜率是多少？',
       choices: [{ tex: '5', value: 5 }, { tex: '4', value: 4 }, { tex: '2', value: 2 }, { tex: '3', value: 3 }],
       answer: 0,
@@ -10,7 +10,7 @@
       check: N => N.diff(x => x*x+3*x, 1)
     },
     {
-      id: 'dap-02', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-02', topic: 'derivative-app', difficulty: 1, concepts: ['dap.tangent'],
       stem: '求 $y=\\sqrt{x}$ 在點 $(4,2)$ 的切線方程式。',
       choices: [{ tex: 'y=\\frac{x}{2}', value: x => x/2 }, { tex: 'y=\\frac{x}{4}+2', value: x => x/4+2 }, { tex: 'y=\\frac{x}{4}+1', value: x => x/4+1 }, { tex: 'y=4x-14', value: x => 4*x-14 }],
       answer: 2,
@@ -18,7 +18,7 @@
       check: N => x => Math.sqrt(4)+N.diff(Math.sqrt, 4)*(x-4)
     },
     {
-      id: 'dap-03', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-03', topic: 'derivative-app', difficulty: 2, concepts: ['dap.tangent'],
       stem: '曲線 $y=x\\ln x$（$x>0$）上，切線平行於 $y=2x+1$ 的點，其橫座標為何？',
       choices: [{ tex: 'e^2', value: Math.exp(2) }, { tex: 'e', value: Math.E }, { tex: '1', value: 1 }, { tex: 'e^{-1}', value: 1/Math.E }],
       answer: 1,
@@ -26,7 +26,7 @@
       check: N => N.roots(x => N.diff(t => t*Math.log(t), x)-2, 0.2, 9)[0]
     },
     {
-      id: 'dap-04', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-04', topic: 'derivative-app', difficulty: 3, concepts: ['dap.tangent'],
       stem: '橢圓 $x^2+4y^2=20$ 在點 $(2,2)$ 的切線方程式為何？',
       choices: [{ tex: 'y=-x+4', value: x => -x+4 }, { tex: 'y=\\frac{x}{4}+\\frac32', value: x => x/4+1.5 }, { tex: 'y=-4x+10', value: x => -4*x+10 }, { tex: 'y=-\\frac{x}{4}+\\frac52', value: x => -x/4+2.5 }],
       answer: 3,
@@ -38,7 +38,7 @@
       }
     },
     {
-      id: 'dap-05', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-05', topic: 'derivative-app', difficulty: 1, concepts: ['dap.tangent'],
       stem: '求拋物線 $y=x^2$ 在 $(1,1)$ 的法線方程式。',
       choices: [{ tex: 'y=2x-1', value: x => 2*x-1 }, { tex: 'y=\\frac{x}{2}+\\frac12', value: x => x/2+0.5 }, { tex: 'y=-\\frac{x}{2}+\\frac32', value: x => -x/2+1.5 }, { tex: 'y=-2x+3', value: x => -2*x+3 }],
       answer: 2,
@@ -46,7 +46,7 @@
       check: N => x => 1-(x-1)/N.diff(t => t*t, 1)
     },
     {
-      id: 'dap-06', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-06', topic: 'derivative-app', difficulty: 2, concepts: ['dap.tangent'],
       stem: '對數曲線 $y=\\ln x$ 在 $x=e$ 的法線為何？',
       choices: [{ tex: 'y=-ex+e^2+1', value: x => -Math.E*x+Math.E**2+1 }, { tex: 'y=\\frac{x}{e}', value: x => x/Math.E }, { tex: 'y=ex-e^2+1', value: x => Math.E*x-Math.E**2+1 }, { tex: 'y=-ex+e^2', value: x => -Math.E*x+Math.E**2 }],
       answer: 0,
@@ -54,7 +54,7 @@
       check: N => x => Math.log(Math.E)-(x-Math.E)/N.diff(Math.log, Math.E)
     },
     {
-      id: 'dap-07', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-07', topic: 'derivative-app', difficulty: 3, concepts: ['dap.tangent'],
       stem: '曲線 $y=x^3$ 在原點的法線是哪一條直線？',
       choices: [{ tex: 'y=0', value: [0, 1, 0] }, { tex: 'y=x', value: [1, -1, 0] }, { tex: 'y=-x', value: [1, 1, 0] }, { tex: 'x=0', value: [1, 0, 0] }],
       answer: 3,
@@ -66,7 +66,7 @@
       }
     },
     {
-      id: 'dap-08', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-08', topic: 'derivative-app', difficulty: 1, concepts: ['dap.extrema'],
       stem: '函數 $f(x)=x^3-3x$ 的所有臨界數（橫座標，由小到大）為何？',
       choices: [{ tex: '\\{-\\sqrt3,\\sqrt3\\}', value: [-Math.sqrt(3), Math.sqrt(3)] }, { tex: '\\{-1,1\\}', value: [-1, 1] }, { tex: '\\{0\\}', value: [0] }, { tex: '\\{-3,3\\}', value: [-3, 3] }],
       answer: 1,
@@ -74,7 +74,7 @@
       check: N => N.roots(x => N.diff(t => t*t*t-3*t, x), -3, 3)
     },
     {
-      id: 'dap-09', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-09', topic: 'derivative-app', difficulty: 2, concepts: ['dap.extrema'],
       stem: '函數 $f(x)=|x-2|$ 在哪個橫座標有「導數不存在」的臨界點？',
       choices: [{ tex: '0', value: 0 }, { tex: '-2', value: -2 }, { tex: '2', value: 2 }, { tex: '\\text{不存在}', value: 'none' }],
       answer: 2,
@@ -85,7 +85,7 @@
       }
     },
     {
-      id: 'dap-10', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-10', topic: 'derivative-app', difficulty: 3, concepts: ['dap.extrema'],
       stem: '設 $f(x)=x^2/(x-1)$（$x\\ne1$），求全部臨界數，由小到大列出。',
       choices: [{ tex: '\\{0,2\\}', value: [0, 2] }, { tex: '\\{0,1,2\\}', value: [0, 1, 2] }, { tex: '\\{1\\}', value: [1] }, { tex: '\\{0\\}', value: [0] }],
       answer: 0,
@@ -96,7 +96,7 @@
       }
     },
     {
-      id: 'dap-11', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-11', topic: 'derivative-app', difficulty: 2, concepts: ['dap.tangent', 'dap.extrema'],
       stem: '對 $f(x)=xe^{-x}$，使切線水平的橫座標為何？',
       choices: [{ tex: '0', value: 0 }, { tex: '-1', value: -1 }, { tex: '\\text{不存在}', value: 'none' }, { tex: '1', value: 1 }],
       answer: 3,
@@ -107,7 +107,7 @@
       }
     },
     {
-      id: 'dap-12', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-12', topic: 'derivative-app', difficulty: 1, concepts: ['dap.extrema'],
       stem: '函數 $f(x)=x^2-6x+11$ 的局部極小值是多少（回答函數值）？',
       choices: [{ tex: '3', value: 3 }, { tex: '2', value: 2 }, { tex: '11', value: 11 }, { tex: '-2', value: -2 }],
       answer: 1,
@@ -115,7 +115,7 @@
       check: N => N.minimize(x => x*x-6*x+11, 0, 6).value
     },
     {
-      id: 'dap-13', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-13', topic: 'derivative-app', difficulty: 2, concepts: ['dap.extrema'],
       stem: '曲線 $y=x^3-6x^2+9x+1$ 的局部極大點座標是哪一個？',
       choices: [{ tex: '(3,1)', value: [3, 1] }, { tex: '(1,1)', value: [1, 1] }, { tex: '(1,5)', value: [1, 5] }, { tex: '(3,5)', value: [3, 5] }],
       answer: 2,
@@ -128,7 +128,7 @@
       }
     },
     {
-      id: 'dap-14', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-14', topic: 'derivative-app', difficulty: 3, concepts: ['dap.extrema'],
       stem: '偶函數 $f(x)=x^4-4x^2$ 有兩個局部極小點，這兩點共同的函數值為何？',
       choices: [{ tex: '-2', value: -2 }, { tex: '0', value: 0 }, { tex: '4', value: 4 }, { tex: '-4', value: -4 }],
       answer: 3,
@@ -136,7 +136,7 @@
       check: N => N.minimize(x => x**4-4*x*x, -3, 3).value
     },
     {
-      id: 'dap-15', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-15', topic: 'derivative-app', difficulty: 2, concepts: ['dap.extrema', 'dap.shape'],
       stem: '已知 $f(x)=x^3$，原點屬於哪一種情況？',
       choices: [{ tex: '\\text{駐點，但不是局部極值點}', value: 'stationary' }, { tex: '\\text{局部極大點}', value: 'maximum' }, { tex: '\\text{局部極小點}', value: 'minimum' }, { tex: '\\text{不是駐點}', value: 'nonstationary' }],
       answer: 0,
@@ -148,7 +148,7 @@
       }
     },
     {
-      id: 'dap-16', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-16', topic: 'derivative-app', difficulty: 1, concepts: ['dap.extrema'],
       stem: '在閉區間 $[0,3]$ 上，$f(x)=x^2-2x$ 的絕對最大值為何？',
       choices: [{ tex: '-1', value: -1 }, { tex: '0', value: 0 }, { tex: '3', value: 3 }, { tex: '1', value: 1 }],
       answer: 2,
@@ -156,7 +156,7 @@
       check: N => N.maximize(x => x*x-2*x, 0, 3).value
     },
     {
-      id: 'dap-17', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-17', topic: 'derivative-app', difficulty: 2, concepts: ['dap.extrema'],
       stem: '求 $f(x)=x+1/x$ 在 $[1/2,3]$ 的絕對最小值。',
       choices: [{ tex: '1', value: 1 }, { tex: '2', value: 2 }, { tex: '\\frac52', value: 2.5 }, { tex: '\\frac{10}{3}', value: 10/3 }],
       answer: 1,
@@ -164,7 +164,7 @@
       check: N => N.minimize(x => x+1/x, 0.5, 3).value
     },
     {
-      id: 'dap-18', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-18', topic: 'derivative-app', difficulty: 3, concepts: ['dap.extrema'],
       stem: '函數 $f(x)=x^2e^{-x}$ 在 $[0,5]$ 的絕對最大值是多少？',
       choices: [{ tex: '4e^{-2}', value: 4*Math.exp(-2) }, { tex: '2e^{-2}', value: 2*Math.exp(-2) }, { tex: '25e^{-5}', value: 25*Math.exp(-5) }, { tex: '0', value: 0 }],
       answer: 0,
@@ -172,7 +172,7 @@
       check: N => N.maximize(x => x*x*Math.exp(-x), 0, 5).value
     },
     {
-      id: 'dap-19', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-19', topic: 'derivative-app', difficulty: 1, concepts: ['dap.extrema', 'dap.shape'],
       stem: '限制 $0\\le x\\le\\pi/6$ 時，$y=\\sin x$ 的絕對最大值為何？',
       choices: [{ tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '\\frac{\\sqrt3}{2}', value: Math.sqrt(3)/2 }, { tex: '\\frac12', value: 0.5 }],
       answer: 3,
@@ -180,7 +180,7 @@
       check: N => N.maximize(Math.sin, 0, Math.PI/6).value
     },
     {
-      id: 'dap-20', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-20', topic: 'derivative-app', difficulty: 1, concepts: ['dap.shape'],
       stem: '$f(x)=x^3-12x$ 的最大遞減開區間為何？',
       choices: [{ tex: '(-\\sqrt{12},\\sqrt{12})', value: [-Math.sqrt(12), Math.sqrt(12)] }, { tex: '(0,2)', value: [0, 2] }, { tex: '(-2,2)', value: [-2, 2] }, { tex: '(-4,4)', value: [-4, 4] }],
       answer: 2,
@@ -192,7 +192,7 @@
       }
     },
     {
-      id: 'dap-21', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-21', topic: 'derivative-app', difficulty: 2, concepts: ['dap.shape'],
       stem: '對 $f(x)=(\\ln x)/x$（$x>0$），最大遞增開區間為 $(0,b)$，求 $b$。',
       choices: [{ tex: 'e', value: Math.E }, { tex: '1', value: 1 }, { tex: 'e^{-1}', value: 1/Math.E }, { tex: 'e^2', value: Math.exp(2) }],
       answer: 0,
@@ -204,7 +204,7 @@
       }
     },
     {
-      id: 'dap-22', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-22', topic: 'derivative-app', difficulty: 3, concepts: ['dap.shape'],
       stem: '$f(x)=x+1/x$（$x\\ne0$）的遞增區間為 $(-\\infty,a)$ 與 $(b,\\infty)$，求 $(a,b)$。',
       choices: [{ tex: '(-1,0)', value: [-1, 0] }, { tex: '(0,1)', value: [0, 1] }, { tex: '(-1,1)', value: [-1, 1] }, { tex: '(0,0)', value: [0, 0] }],
       answer: 2,
@@ -217,7 +217,7 @@
       }
     },
     {
-      id: 'dap-23', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-23', topic: 'derivative-app', difficulty: 1, concepts: ['dap.shape'],
       stem: '函數 $f(x)=e^{-x}$ 在整條實數軸上的單調性為何？',
       choices: [{ tex: '\\text{嚴格遞增}', value: 'increasing' }, { tex: '\\text{嚴格遞減}', value: 'decreasing' }, { tex: '\\text{先減後增}', value: 'minimum' }, { tex: '\\text{先增後減}', value: 'maximum' }],
       answer: 1,
@@ -228,7 +228,7 @@
       }
     },
     {
-      id: 'dap-24', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-24', topic: 'derivative-app', difficulty: 1, concepts: ['dap.shape'],
       stem: '$f(x)=x^3-6x^2$ 的反曲點橫座標是多少？',
       choices: [{ tex: '0', value: 0 }, { tex: '4', value: 4 }, { tex: '-2', value: -2 }, { tex: '2', value: 2 }],
       answer: 3,
@@ -241,7 +241,7 @@
       }
     },
     {
-      id: 'dap-25', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-25', topic: 'derivative-app', difficulty: 2, concepts: ['dap.shape'],
       stem: '曲線 $y=xe^{-x}$ 在 $(a,\\infty)$ 凹向上（$y\'\'>0$），且此區間不能再擴大，求 $a$。',
       choices: [{ tex: '2', value: 2 }, { tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '-2', value: -2 }],
       answer: 0,
@@ -254,7 +254,7 @@
       }
     },
     {
-      id: 'dap-26', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-26', topic: 'derivative-app', difficulty: 3, concepts: ['dap.shape'],
       stem: '函數 $f(x)=\\ln(1+x^2)$ 的全部反曲點橫座標，由小到大為何？',
       choices: [{ tex: '\\{0\\}', value: [0] }, { tex: '\\{-1,0,1\\}', value: [-1, 0, 1] }, { tex: '\\{-1,1\\}', value: [-1, 1] }, { tex: '\\{-\\sqrt2,\\sqrt2\\}', value: [-Math.sqrt(2), Math.sqrt(2)] }],
       answer: 2,
@@ -265,7 +265,7 @@
       }
     },
     {
-      id: 'dap-27', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-27', topic: 'derivative-app', difficulty: 2, concepts: ['dap.shape'],
       stem: '對 $y=x^4$，已知 $y\'\'(0)=0$，原點是否為反曲點？',
       choices: [{ tex: '\\text{是，因為二階導數為零}', value: 'zero' }, { tex: '\\text{是，因為切線水平}', value: 'horizontal' }, { tex: '\\text{否，因為原點不在曲線上}', value: 'offcurve' }, { tex: '\\text{否，因為兩側都凹向上}', value: 'same' }],
       answer: 3,
@@ -277,7 +277,7 @@
       }
     },
     {
-      id: 'dap-28', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-28', topic: 'derivative-app', difficulty: 1, concepts: ['dap.optimize'],
       stem: '用長 $24$ 公尺的繩子圍成長方形，面積最大時，其中一邊長多少公尺？',
       choices: [{ tex: '12', value: 12 }, { tex: '6', value: 6 }, { tex: '3', value: 3 }, { tex: '24', value: 24 }],
       answer: 1,
@@ -285,7 +285,7 @@
       check: N => N.maximize(x => x*(24/2-x), 0, 12).x
     },
     {
-      id: 'dap-29', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-29', topic: 'derivative-app', difficulty: 2, concepts: ['dap.optimize'],
       stem: '一張邊長 $12$ 公分的正方形紙，四角各剪去邊長 $x$ 的小正方形後折成無蓋盒。要使容積最大，$x$ 應為多少公分？',
       choices: [{ tex: '6', value: 6 }, { tex: '4', value: 4 }, { tex: '2', value: 2 }, { tex: '3', value: 3 }],
       answer: 2,
@@ -293,7 +293,7 @@
       check: N => N.maximize(x => x*(12-2*x)**2, 0, 6).x
     },
     {
-      id: 'dap-30', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-30', topic: 'derivative-app', difficulty: 3, concepts: ['dap.optimize'],
       stem: '有蓋圓柱罐的容積固定為 $54\\pi$ 立方公分。忽略厚度，使總表面積最小的半徑是多少公分？',
       choices: [{ tex: '3', value: 3 }, { tex: '\\sqrt[3]{54}', value: Math.cbrt(54) }, { tex: '6', value: 6 }, { tex: '\\sqrt[3]{27/2}', value: Math.cbrt(13.5) }],
       answer: 0,
@@ -304,7 +304,7 @@
       }
     },
     {
-      id: 'dap-31', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-31', topic: 'derivative-app', difficulty: 2, concepts: ['dap.optimize'],
       stem: '拋物線 $y=x^2$ 上距離 $(0,3)$ 最近的兩點中，位於右半平面的點，其橫座標為何？',
       choices: [{ tex: '\\sqrt3', value: Math.sqrt(3) }, { tex: '0', value: 0 }, { tex: '\\sqrt5', value: Math.sqrt(5) }, { tex: '\\sqrt{5/2}', value: Math.sqrt(2.5) }],
       answer: 3,
@@ -312,7 +312,7 @@
       check: N => N.minimize(x => x*x+(x*x-3)**2, 0, 4).x
     },
     {
-      id: 'dap-32', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-32', topic: 'derivative-app', difficulty: 3, concepts: ['dap.optimize'],
       stem: '某商品售出 $q$ 件時單價為 $60-2q$ 元，總成本為 $6q+40$ 元（$0\\le q\\le30$，以連續模型計）。最大利潤為多少元？',
       choices: [{ tex: '320', value: 320 }, { tex: '\\frac{649}{2}', value: 324.5 }, { tex: '\\frac{729}{2}', value: 364.5 }, { tex: '\\frac{27}{2}', value: 13.5 }],
       answer: 1,
@@ -320,7 +320,7 @@
       check: N => N.maximize(q => q*(60-2*q)-(6*q+40), 0, 30).value
     },
     {
-      id: 'dap-33', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-33', topic: 'derivative-app', difficulty: 1, concepts: ['dap.optimize'],
       stem: '兩個非負數的和固定為 $10$。它們的平方和最小時，較小的數是多少？',
       choices: [{ tex: '0', value: 0 }, { tex: '10', value: 10 }, { tex: '5', value: 5 }, { tex: '\\frac52', value: 2.5 }],
       answer: 2,
@@ -331,7 +331,7 @@
       }
     },
     {
-      id: 'dap-34', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-34', topic: 'derivative-app', difficulty: 1, concepts: ['dap.related'],
       stem: '圓的半徑以每秒 $2$ 公分增加；半徑為 $3$ 公分時，面積每秒增加多少平方公分？',
       choices: [{ tex: '12\\pi', value: 12*Math.PI }, { tex: '6\\pi', value: 6*Math.PI }, { tex: '9\\pi', value: 9*Math.PI }, { tex: '4\\pi', value: 4*Math.PI }],
       answer: 0,
@@ -339,7 +339,7 @@
       check: N => N.diff(t => Math.PI*(3+2*t)**2, 0)
     },
     {
-      id: 'dap-35', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-35', topic: 'derivative-app', difficulty: 2, concepts: ['dap.related'],
       stem: '長 $10$ 公尺的梯子靠牆，底端以每秒 $2$ 公尺遠離牆。當底端離牆 $6$ 公尺時，頂端高度的變化率為多少公尺／秒（向上為正）？',
       choices: [{ tex: '\\frac32', value: 1.5 }, { tex: '-\\frac83', value: -8/3 }, { tex: '-\\frac34', value: -0.75 }, { tex: '-\\frac32', value: -1.5 }],
       answer: 3,
@@ -347,7 +347,7 @@
       check: N => N.diff(t => Math.sqrt(10**2-(6+2*t)**2), 0)
     },
     {
-      id: 'dap-36', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-36', topic: 'derivative-app', difficulty: 3, concepts: ['dap.related'],
       stem: '倒圓錐水槽的水面半徑始終為水深的一半。以每秒 $3\\pi$ 立方公分注水，水深 $6$ 公分時，水面上升速率為多少公分／秒？',
       choices: [{ tex: '\\frac13', value: 1/3 }, { tex: '1', value: 1 }, { tex: '\\frac1{12}', value: 1/12 }, { tex: '\\frac19', value: 1/9 }],
       answer: 0,
@@ -358,7 +358,7 @@
       }
     },
     {
-      id: 'dap-37', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-37', topic: 'derivative-app', difficulty: 2, concepts: ['dap.related'],
       stem: '高 $6$ 公尺的路燈旁，一位身高 $2$ 公尺的人以每秒 $3$ 公尺遠離燈柱。地面上「影子本身的長度」每秒增加多少公尺？',
       choices: [{ tex: '\\frac92', value: 4.5 }, { tex: '3', value: 3 }, { tex: '\\frac32', value: 1.5 }, { tex: '1', value: 1 }],
       answer: 2,
@@ -366,7 +366,7 @@
       check: N => N.diff(t => 2*(4+3*t)/(6-2), 0)
     },
     {
-      id: 'dap-38', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-38', topic: 'derivative-app', difficulty: 3, concepts: ['dap.related'],
       stem: '觀測者距垂直升空點的水平距離固定為 $8$ 公尺，物體高度 $6$ 公尺且以每秒 $5$ 公尺上升時，仰角的變化率為多少弧度／秒？',
       choices: [{ tex: '\\frac58', value: 5/8 }, { tex: '\\frac25', value: 0.4 }, { tex: '\\frac12', value: 0.5 }, { tex: '\\frac45', value: 0.8 }],
       answer: 1,
@@ -374,7 +374,7 @@
       check: N => N.diff(t => Math.atan((6+5*t)/8), 0)
     },
     {
-      id: 'dap-39', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-39', topic: 'derivative-app', difficulty: 1, concepts: ['dap.mvt'],
       stem: '用 $f(x)=\\sqrt{x}$ 在 $a=4$ 的線性近似估計 $\\sqrt{4.12}$，結果為何？',
       choices: [{ tex: '2.12', value: 2.12 }, { tex: '2.06', value: 2.06 }, { tex: '2.015', value: 2.015 }, { tex: '2.03', value: 2.03 }],
       answer: 3,
@@ -382,7 +382,7 @@
       check: N => Math.sqrt(4)+N.diff(Math.sqrt, 4)*(4.12-4)
     },
     {
-      id: 'dap-40', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-40', topic: 'derivative-app', difficulty: 1, concepts: ['dap.mvt'],
       stem: '以 $a=0$ 為展開點，使用 $e^x$ 的一次線性近似估計 $e^{0.02}$。',
       choices: [{ tex: '1.02', value: 1.02 }, { tex: '0.02', value: 0.02 }, { tex: '1.0002', value: 1.0002 }, { tex: '0.98', value: 0.98 }],
       answer: 0,
@@ -390,7 +390,7 @@
       check: N => Math.exp(0)+N.diff(Math.exp, 0)*0.02
     },
     {
-      id: 'dap-41', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-41', topic: 'derivative-app', difficulty: 2, concepts: ['dap.mvt'],
       stem: '用 $f(x)=x^{1/3}$ 在 $a=8$ 的切線，近似 $\\sqrt[3]{7.88}$ 的值為何？',
       choices: [{ tex: '1.88', value: 1.88 }, { tex: '2.01', value: 2.01 }, { tex: '1.99', value: 1.99 }, { tex: '1.96', value: 1.96 }],
       answer: 2,
@@ -398,7 +398,7 @@
       check: N => Math.cbrt(8)+N.diff(Math.cbrt, 8)*(7.88-8)
     },
     {
-      id: 'dap-42', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-42', topic: 'derivative-app', difficulty: 3, concepts: ['dap.mvt', 'dap.tangent'],
       stem: '為近似解 $\\ln x=1$，將 $\\ln x$ 在 $x_0=2$ 處線性化，再令線性式等於 $1$，所得 $x_1$ 為何？',
       choices: [{ tex: '2+\\frac{1-\\ln2}{2}', value: 2+(1-Math.log(2))/2 }, { tex: '4-2\\ln2', value: 4-2*Math.log(2) }, { tex: '2\\ln2', value: 2*Math.log(2) }, { tex: '2-2\\ln2', value: 2-2*Math.log(2) }],
       answer: 1,
@@ -406,7 +406,7 @@
       check: N => 2+(1-Math.log(2))/N.diff(Math.log, 2)
     },
     {
-      id: 'dap-43', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-43', topic: 'derivative-app', difficulty: 1, concepts: ['dap.mvt'],
       stem: '對 $f(x)=x^2$ 在 $[1,5]$ 使用均值定理，滿足 $f\'(c)=[f(5)-f(1)]/(5-1)$ 的 $c$ 是多少？',
       choices: [{ tex: '6', value: 6 }, { tex: '2', value: 2 }, { tex: '4', value: 4 }, { tex: '3', value: 3 }],
       answer: 3,
@@ -417,7 +417,7 @@
       }
     },
     {
-      id: 'dap-44', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-44', topic: 'derivative-app', difficulty: 2, concepts: ['dap.mvt'],
       stem: '函數 $f(x)=\\ln x$ 在 $[1,e]$ 的均值定理保證的 $c$ 為何？',
       choices: [{ tex: 'e-1', value: Math.E-1 }, { tex: '\\frac1{e-1}', value: 1/(Math.E-1) }, { tex: '\\frac{e+1}{2}', value: (Math.E+1)/2 }, { tex: 'e', value: Math.E }],
       answer: 0,
@@ -428,7 +428,7 @@
       }
     },
     {
-      id: 'dap-45', topic: 'derivative-app', difficulty: 2,
+      id: 'dap-45', topic: 'derivative-app', difficulty: 2, concepts: ['dap.mvt'],
       stem: '在 $[1,9]$ 上，$f(x)=\\sqrt{x}$ 的哪個內點切線與兩端點連線平行（求橫座標）？',
       choices: [{ tex: '5', value: 5 }, { tex: '2', value: 2 }, { tex: '4', value: 4 }, { tex: '16', value: 16 }],
       answer: 2,
@@ -439,7 +439,7 @@
       }
     },
     {
-      id: 'dap-46', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-46', topic: 'derivative-app', difficulty: 3, concepts: ['dap.mvt'],
       stem: '對 $f(x)=x^3$ 在 $[-1,2]$ 使用均值定理，所有符合條件且位於開區間 $(-1,2)$ 的 $c$ 為何？',
       choices: [{ tex: '\\{-1,1\\}', value: [-1, 1] }, { tex: '\\{1\\}', value: [1] }, { tex: '\\{\\sqrt3\\}', value: [Math.sqrt(3)] }, { tex: '\\{0\\}', value: [0] }],
       answer: 1,
@@ -450,7 +450,7 @@
       }
     },
     {
-      id: 'dap-47', topic: 'derivative-app', difficulty: 1,
+      id: 'dap-47', topic: 'derivative-app', difficulty: 1, concepts: ['dap.lhopital'],
       stem: '使用羅必達法則計算 $\\lim_{x\\to0}(e^x-1)/x$。',
       choices: [{ tex: '0', value: 0 }, { tex: '\\text{不存在}', value: 'DNE' }, { tex: 'e', value: Math.E }, { tex: '1', value: 1 }],
       answer: 3,
@@ -458,7 +458,7 @@
       check: N => N.limit(x => Math.expm1(x)/x, 0)
     },
     {
-      id: 'dap-48', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-48', topic: 'derivative-app', difficulty: 3, concepts: ['dap.lhopital'],
       stem: '求極限 $\\lim_{x\\to0}(\\sin x-x)/x^3$，可連續使用羅必達法則。',
       choices: [{ tex: '-\\frac16', value: -1/6 }, { tex: '\\frac16', value: 1/6 }, { tex: '-\\frac12', value: -0.5 }, { tex: '0', value: 0 }],
       answer: 0,
@@ -474,7 +474,7 @@
       }
     },
     {
-      id: 'dap-49', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-49', topic: 'derivative-app', difficulty: 3, concepts: ['dap.lhopital'],
       stem: '用羅必達法則求 $\\lim_{x\\to0^+}x\\ln x$。',
       choices: [{ tex: '-1', value: -1 }, { tex: '-\\infty', value: '-inf' }, { tex: '0', value: 0 }, { tex: '+\\infty', value: '+inf' }],
       answer: 2,
@@ -485,7 +485,7 @@
       }
     },
     {
-      id: 'dap-50', topic: 'derivative-app', difficulty: 3,
+      id: 'dap-50', topic: 'derivative-app', difficulty: 3, concepts: ['dap.lhopital'],
       stem: '求 $\\lim_{x\\to+\\infty}(\\ln x)/\\sqrt{x}$。',
       choices: [{ tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '+\\infty', value: '+inf' }, { tex: '\\frac12', value: 0.5 }],
       answer: 1,

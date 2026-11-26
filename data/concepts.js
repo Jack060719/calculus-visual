@@ -21,7 +21,9 @@
     { id: 'lim.special', topic: 'limit', label: '特殊極限（sin x / x、e）' },
     { id: 'lim.infinity', topic: 'limit', label: '無窮遠極限與漸近線' },
     { id: 'lim.squeeze', topic: 'limit', label: '夾擠定理' },
+    { id: 'lim.ivt', topic: 'limit', label: '中間值定理' },
     // 導數
+    { id: 'der.def', topic: 'derivative', label: '導數定義（差商極限）' },
     { id: 'der.basic', topic: 'derivative', label: '基本求導公式' },
     { id: 'der.product', topic: 'derivative', label: '乘法與除法法則' },
     { id: 'der.chain', topic: 'derivative', label: '連鎖律' },
@@ -53,7 +55,8 @@
     { id: 'itc.radical', topic: 'integral-tech', label: '根式代換' },
     // 級數與泰勒
     { id: 'ser.geometric', topic: 'series', label: '等比級數' },
-    { id: 'ser.tests', topic: 'series', label: '審斂法（比值／積分／p 級數）' },
+    { id: 'ser.tests', topic: 'series', label: '審斂法（通項／比較／比值／根值／積分／p 級數）' },
+    { id: 'ser.telescope', topic: 'series', label: '望遠鏡級數' },
     { id: 'ser.alternating', topic: 'series', label: '交錯級數' },
     { id: 'ser.radius', topic: 'series', label: '收斂區間與半徑' },
     { id: 'ser.taylor', topic: 'series', label: '泰勒與麥克勞林展開' },

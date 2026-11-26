@@ -2,7 +2,7 @@
   var Calc = root.Calc = root.Calc || {};
   var questions = [
     {
-      id: 'ser-01', topic: 'series', difficulty: 1,
+      id: 'ser-01', topic: 'series', difficulty: 1, concepts: ['ser.geometric'],
       stem: '求等比級數 $\\sum_{n=0}^{\\infty}\\frac1{3^n}$ 的和。',
       choices: [{ tex: '3', value: 3 }, { tex: '\\frac12', value: 1/2 }, { tex: '\\frac32', value: 3/2 }, { tex: '1', value: 1 }],
       answer: 2,
@@ -10,7 +10,7 @@
       check: N => N.sum(n => 1/3**n, 0, 80)
     },
     {
-      id: 'ser-02', topic: 'series', difficulty: 1,
+      id: 'ser-02', topic: 'series', difficulty: 1, concepts: ['ser.tests'],
       stem: '判斷 $\\sum_{n=1}^{\\infty}\\frac1n$ 是否收斂。',
       choices: [{ tex: '\\text{收斂}', value: 'converge' }, { tex: '\\text{發散}', value: 'diverge' }, { tex: '0', value: 0 }, { tex: '1', value: 1 }],
       answer: 1,
@@ -18,7 +18,7 @@
       check: N => N.series(n => 1/n)
     },
     {
-      id: 'ser-03', topic: 'series', difficulty: 1,
+      id: 'ser-03', topic: 'series', difficulty: 1, concepts: ['ser.tests'],
       stem: '判斷 $\\sum_{n=1}^{\\infty}\\frac1{n^2}$ 是否收斂。',
       choices: [{ tex: '\\text{收斂}', value: 'converge' }, { tex: '\\text{發散}', value: 'diverge' }, { tex: '0', value: 0 }, { tex: '1', value: 1 }],
       answer: 0,
@@ -26,7 +26,7 @@
       check: N => N.series(n => 1/(n*n))
     },
     {
-      id: 'ser-04', topic: 'series', difficulty: 2,
+      id: 'ser-04', topic: 'series', difficulty: 2, concepts: ['ser.alternating'],
       stem: '判斷交錯級數 $\\sum_{n=1}^{\\infty}\\frac{(-1)^{n+1}}n$ 是否收斂。',
       choices: [{ tex: '\\text{發散}', value: 'diverge' }, { tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: '\\text{收斂}', value: 'converge' }],
       answer: 3,
@@ -34,7 +34,7 @@
       check: N => N.series(n => (-1)**(n+1)/n)
     },
     {
-      id: 'ser-05', topic: 'series', difficulty: 2,
+      id: 'ser-05', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '判斷 $\\sum_{n=1}^{\\infty}\\frac{n}{n+1}$ 是否收斂。',
       choices: [{ tex: '\\text{收斂}', value: 'converge' }, { tex: '1', value: 1 }, { tex: '\\text{發散}', value: 'diverge' }, { tex: '0', value: 0 }],
       answer: 2,
@@ -42,7 +42,7 @@
       check: N => N.series(n => n/(n+1))
     },
     {
-      id: 'ser-06', topic: 'series', difficulty: 2,
+      id: 'ser-06', topic: 'series', difficulty: 2, concepts: ['ser.geometric'],
       stem: '求 $\\sum_{n=1}^{\\infty}\\frac{n}{2^n}$ 的和。',
       choices: [{ tex: '1', value: 1 }, { tex: '2', value: 2 }, { tex: '\\frac12', value: 1/2 }, { tex: '4', value: 4 }],
       answer: 1,
@@ -50,7 +50,7 @@
       check: N => N.sum(n => n/2**n, 1, 100)
     },
     {
-      id: 'ser-07', topic: 'series', difficulty: 2,
+      id: 'ser-07', topic: 'series', difficulty: 2, concepts: ['ser.taylor'],
       stem: '$e^{3x}$ 在 $x=0$ 的泰勒展開中，$x^2$ 項的係數是多少？',
       choices: [{ tex: '\\frac92', value: 9/2 }, { tex: '9', value: 9 }, { tex: '\\frac32', value: 3/2 }, { tex: '3', value: 3 }],
       answer: 0,
@@ -58,7 +58,7 @@
       check: N => N.diff(x => N.diff(t => Math.exp(3*t), x), 0)/2
     },
     {
-      id: 'ser-08', topic: 'series', difficulty: 3,
+      id: 'ser-08', topic: 'series', difficulty: 3, concepts: ['ser.taylor'],
       stem: '$\\sin2x$ 在 $x=0$ 的泰勒展開中，$x^3$ 項的係數是多少？',
       choices: [{ tex: '-8', value: -8 }, { tex: '\\frac43', value: 4/3 }, { tex: '-\\frac13', value: -1/3 }, { tex: '-\\frac43', value: -4/3 }],
       answer: 3,
@@ -66,7 +66,7 @@
       check: N => N.diff(x => N.diff(y => N.diff(t => Math.sin(2*t), y), x), 0)/6
     },
     {
-      id: 'ser-09', topic: 'series', difficulty: 3,
+      id: 'ser-09', topic: 'series', difficulty: 3, concepts: ['ser.radius', 'ser.geometric'],
       stem: '將 $x=6$ 代入冪級數 $\\sum_{n=1}^{\\infty}\\frac{(x-1)^n}{4^n}$，所得級數是否收斂？',
       choices: [{ tex: '\\text{收斂}', value: 'converge' }, { tex: '4', value: 4 }, { tex: '\\text{發散}', value: 'diverge' }, { tex: '0', value: 0 }],
       answer: 2,
@@ -74,7 +74,7 @@
       check: N => N.series(n => ((6-1)/4)**n)
     },
     {
-      id: 'ser-10', topic: 'series', difficulty: 3,
+      id: 'ser-10', topic: 'series', difficulty: 3, concepts: ['ser.alternating'],
       stem: '判斷 $\\sum_{n=1}^{\\infty}\\frac{(-1)^{n+1}}{\\sqrt n}$ 是否收斂。',
       choices: [{ tex: '\\text{發散}', value: 'diverge' }, { tex: '\\text{收斂}', value: 'converge' }, { tex: '0', value: 0 }, { tex: '1', value: 1 }],
       answer: 1,
@@ -82,7 +82,7 @@
       check: N => N.series(n => (-1)**(n+1)/Math.sqrt(n))
     },
     {
-      id: 'ser-11', topic: 'series', difficulty: 1,
+      id: 'ser-11', topic: 'series', difficulty: 1, concepts: ['ser.geometric'],
       stem: '無窮等比和 $2-1+\\frac12-\\frac14+\\cdots$ 等於多少？',
       choices: [{ tex: '4', value: 4 }, { tex: '\\frac43', value: 4/3 }, { tex: '\\frac23', value: 2/3 }, { tex: '1', value: 1 }],
       answer: 1,
@@ -90,7 +90,7 @@
       check: N => N.sum(n => 2*(-1/2)**n, 0, 80)
     },
     {
-      id: 'ser-12', topic: 'series', difficulty: 1,
+      id: 'ser-12', topic: 'series', difficulty: 1, concepts: ['ser.geometric'],
       stem: '等比級數從第三次方開始：$\\sum_{n=3}^{\\infty}(\\frac25)^n$ 的和是多少？',
       choices: [{ tex: '\\frac8{125}', value: 8/125 }, { tex: '\\frac23', value: 2/3 }, { tex: '\\frac8{75}', value: 8/75 }, { tex: '\\frac4{15}', value: 4/15 }],
       answer: 2,
@@ -98,7 +98,7 @@
       check: N => N.sum(n => (2/5)**n, 3, 80)
     },
     {
-      id: 'ser-13', topic: 'series', difficulty: 2,
+      id: 'ser-13', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '使 $\\sum_{n=1}^{\\infty}n^{-k/2}$ 收斂的最小正整數 $k$ 是多少？',
       choices: [{ tex: '1', value: 1 }, { tex: '2', value: 2 }, { tex: '4', value: 4 }, { tex: '3', value: 3 }],
       answer: 3,
@@ -110,7 +110,7 @@
       }
     },
     {
-      id: 'ser-14', topic: 'series', difficulty: 1,
+      id: 'ser-14', topic: 'series', difficulty: 1, concepts: ['ser.tests', 'ser.alternating'],
       stem: '級數 $\\sum_{n=1}^{\\infty}(-1)^n\\frac{n}{n+1}$ 應如何判斷？',
       choices: [{ tex: '\\text{收斂，正負項會抵消}', value: 'cancel' }, { tex: '\\text{收斂，因為通項有界}', value: 'bounded' }, { tex: '\\text{發散，因為通項不趨零}', value: 'diverge' }, { tex: '\\text{收斂，因為比值的絕對值趨近一}', value: 'ratio' }],
       answer: 2,
@@ -118,7 +118,7 @@
       check: N => N.series(n => (-1)**n*n/(n+1))
     },
     {
-      id: 'ser-15', topic: 'series', difficulty: 1,
+      id: 'ser-15', topic: 'series', difficulty: 1, concepts: ['ser.tests'],
       stem: '利用 $0<\\frac1{n^2+3}<\\frac1{n^2}$，可對 $\\sum_{n=1}^{\\infty}\\frac1{n^2+3}$ 得到哪個結論？',
       choices: [{ tex: '\\text{收斂，由收斂的上界級數比較}', value: 'converge' }, { tex: '\\text{發散，因為每項為正}', value: 'positive' }, { tex: '\\text{發散，因為有無窮多項}', value: 'infinite' }, { tex: '\\text{不能判斷，較小級數也可能發散}', value: 'unknown' }],
       answer: 0,
@@ -126,7 +126,7 @@
       check: N => N.series(n => 1/(n*n+3))
     },
     {
-      id: 'ser-16', topic: 'series', difficulty: 1,
+      id: 'ser-16', topic: 'series', difficulty: 1, concepts: ['ser.tests'],
       stem: '對 $a_n=n/4^n$ 使用比值審斂法，$L=\\lim_{n\\to\\infty}|a_{n+1}/a_n|$ 是多少？',
       choices: [{ tex: '4', value: 4 }, { tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '\\frac14', value: 1/4 }],
       answer: 3,
@@ -140,7 +140,7 @@
       }
     },
     {
-      id: 'ser-17', topic: 'series', difficulty: 1,
+      id: 'ser-17', topic: 'series', difficulty: 1, concepts: ['ser.tests'],
       stem: '設 $a_n=(\\frac{n+2}{3n})^n$，根值審斂法中的 $\\lim_{n\\to\\infty}\\sqrt[n]{|a_n|}$ 為何？',
       choices: [{ tex: '\\frac13', value: 1/3 }, { tex: '1', value: 1 }, { tex: '3', value: 3 }, { tex: '0', value: 0 }],
       answer: 0,
@@ -154,7 +154,7 @@
       }
     },
     {
-      id: 'ser-18', topic: 'series', difficulty: 1,
+      id: 'ser-18', topic: 'series', difficulty: 1, concepts: ['ser.telescope'],
       stem: '將相鄰項消去後，$\\sum_{n=1}^{\\infty}(\\frac1{n+2}-\\frac1{n+3})$ 的和是多少？',
       choices: [{ tex: '\\frac14', value: 1/4 }, { tex: '\\frac13', value: 1/3 }, { tex: '\\frac1{12}', value: 1/12 }, { tex: '0', value: 0 }],
       answer: 1,
@@ -162,7 +162,7 @@
       check: N => N.sum(n => 1/(n+2)-1/(n+3), 1, 200000)
     },
     {
-      id: 'ser-19', topic: 'series', difficulty: 1,
+      id: 'ser-19', topic: 'series', difficulty: 1, concepts: ['ser.taylor'],
       stem: '$\\cos x$ 的麥克勞林級數中，二次項的係數為何？',
       choices: [{ tex: '\\frac12', value: 1/2 }, { tex: '-1', value: -1 }, { tex: '-\\frac12', value: -1/2 }, { tex: '0', value: 0 }],
       answer: 2,
@@ -170,7 +170,7 @@
       check: N => N.diff(x => N.diff(Math.cos, x), 0)/2
     },
     {
-      id: 'ser-20', topic: 'series', difficulty: 1,
+      id: 'ser-20', topic: 'series', difficulty: 1, concepts: ['ser.geometric', 'ser.taylor'],
       stem: '$\\frac1{1+x}=a_0+a_1x+a_2x^2+\\cdots$，依序列出 $(a_0,a_1,a_2)$。',
       choices: [{ tex: '(1,1,1)', value: [1,1,1] }, { tex: '(1,-1,-1)', value: [1,-1,-1] }, { tex: '(0,-1,1)', value: [0,-1,1] }, { tex: '(1,-1,1)', value: [1,-1,1] }],
       answer: 3,
@@ -181,7 +181,7 @@
       }
     },
     {
-      id: 'ser-21', topic: 'series', difficulty: 1,
+      id: 'ser-21', topic: 'series', difficulty: 1, concepts: ['ser.approx'],
       stem: '用 $e^x$ 在零點的二次泰勒多項式估計 $e^{0.2}$，得到哪個數？',
       choices: [{ tex: '1.22', value: 1.22 }, { tex: '1.2', value: 1.2 }, { tex: '1.24', value: 1.24 }, { tex: '0.22', value: 0.22 }],
       answer: 0,
@@ -189,7 +189,7 @@
       check: N => Math.exp(0)+N.diff(Math.exp, 0)*0.2+N.diff(x => N.diff(Math.exp, x), 0)*0.2**2/2
     },
     {
-      id: 'ser-22', topic: 'series', difficulty: 1,
+      id: 'ser-22', topic: 'series', difficulty: 1, concepts: ['ser.taylor'],
       stem: '利用指數函數的展開，求 $\\sum_{n=0}^{\\infty}\\frac1{n!}$。',
       choices: [{ tex: 'e-1', value: Math.E-1 }, { tex: 'e', value: Math.E }, { tex: '2e', value: 2*Math.E }, { tex: '1', value: 1 }],
       answer: 1,
@@ -201,7 +201,7 @@
       }, 0, 20)
     },
     {
-      id: 'ser-23', topic: 'series', difficulty: 1,
+      id: 'ser-23', topic: 'series', difficulty: 1, concepts: ['ser.alternating', 'ser.tests'],
       stem: '$\\sum_{n=1}^{\\infty}(-1)^n/n^2$ 屬於哪種收斂情形？',
       choices: [{ tex: '\\text{條件收斂}', value: 'conditional' }, { tex: '\\text{發散}', value: 'diverge' }, { tex: '\\text{絕對收斂}', value: 'absolute' }, { tex: '\\text{通項不趨零}', value: 'nonzero' }],
       answer: 2,
@@ -213,7 +213,7 @@
       }
     },
     {
-      id: 'ser-24', topic: 'series', difficulty: 1,
+      id: 'ser-24', topic: 'series', difficulty: 1, concepts: ['ser.radius'],
       stem: '冪級數 $\\sum_{n=1}^{\\infty}n5^nx^n$ 的收斂半徑是多少？',
       choices: [{ tex: '5', value: 5 }, { tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '\\frac15', value: 1/5 }],
       answer: 3,
@@ -227,7 +227,7 @@
       }
     },
     {
-      id: 'ser-25', topic: 'series', difficulty: 1,
+      id: 'ser-25', topic: 'series', difficulty: 1, concepts: ['ser.taylor'],
       stem: '將 $\\sin x/x$ 在零點連續延伸後，它的麥克勞林展開的常數項是多少？',
       choices: [{ tex: '1', value: 1 }, { tex: '0', value: 0 }, { tex: '-1', value: -1 }, { tex: '\\text{不存在}', value: 'DNE' }],
       answer: 0,
@@ -235,7 +235,7 @@
       check: N => N.limit(x => Math.sin(x)/x, 0)
     },
     {
-      id: 'ser-26', topic: 'series', difficulty: 2,
+      id: 'ser-26', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '以 $b_n=1/n^2$ 對 $a_n=(3n+2)/(n^3+1)$ 做極限比較，$\\lim_{n\\to\\infty}a_n/b_n$ 是多少？',
       choices: [{ tex: '0', value: 0 }, { tex: '3', value: 3 }, { tex: '\\frac13', value: 1/3 }, { tex: '1', value: 1 }],
       answer: 1,
@@ -243,7 +243,7 @@
       check: N => N.limitInf(n => ((3*n+2)/(n**3+1))/(1/n**2))
     },
     {
-      id: 'ser-27', topic: 'series', difficulty: 2,
+      id: 'ser-27', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '將 $\\sum_{n=1}^{\\infty}1/\\sqrt{n^2+1}$ 與調和級數極限比較，應選哪個結論？',
       choices: [{ tex: '\\text{收斂，因為分母有平方}', value: 'square' }, { tex: '\\text{收斂，因為通項趨零}', value: 'zero' }, { tex: '\\text{發散，比較極限為一}', value: 'diverge' }, { tex: '\\text{比較極限為零，無法判斷}', value: 'unknown' }],
       answer: 2,
@@ -251,7 +251,7 @@
       check: N => N.series(n => 1/Math.sqrt(n*n+1))
     },
     {
-      id: 'ser-28', topic: 'series', difficulty: 2,
+      id: 'ser-28', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '若 $a_n=n!/n^n$，比值審斂法的極限 $\\lim_{n\\to\\infty}a_{n+1}/a_n$ 為何？',
       choices: [{ tex: '1', value: 1 }, { tex: 'e', value: Math.E }, { tex: '0', value: 0 }, { tex: 'e^{-1}', value: 1/Math.E }],
       answer: 3,
@@ -270,7 +270,7 @@
       }
     },
     {
-      id: 'ser-29', topic: 'series', difficulty: 2,
+      id: 'ser-29', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '對含平方指數的 $\\sum_{n=1}^{\\infty}2^{-n^2}$ 使用根值審斂法，根值極限 $L$ 是多少？',
       choices: [{ tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: '\\frac12', value: 1/2 }, { tex: '2', value: 2 }],
       answer: 0,
@@ -284,7 +284,7 @@
       }
     },
     {
-      id: 'ser-30', topic: 'series', difficulty: 2,
+      id: 'ser-30', topic: 'series', difficulty: 2, concepts: ['ser.telescope'],
       stem: '求對數望遠鏡級數 $\\sum_{n=1}^{\\infty}\\ln\\frac{(n+1)^2}{n(n+2)}$ 的和。',
       choices: [{ tex: '0', value: 0 }, { tex: '\\ln2', value: Math.log(2) }, { tex: '2\\ln2', value: 2*Math.log(2) }, { tex: '-\\ln2', value: -Math.log(2) }],
       answer: 1,
@@ -292,7 +292,7 @@
       check: N => N.sum(n => Math.log((n+1)**2/(n*(n+2))), 1, 100000)
     },
     {
-      id: 'ser-31', topic: 'series', difficulty: 2,
+      id: 'ser-31', topic: 'series', difficulty: 2, concepts: ['ser.radius', 'ser.alternating'],
       stem: '含端點判斷，冪級數 $\\sum_{n=1}^{\\infty}x^n/n$ 的收斂區間為何？',
       choices: [{ tex: '(-1,1)', value: '(-1,1)' }, { tex: '[-1,1]', value: '[-1,1]' }, { tex: '[-1,1)', value: '[-1,1)' }, { tex: '(-1,1]', value: '(-1,1]' }],
       answer: 2,
@@ -306,7 +306,7 @@
       }
     },
     {
-      id: 'ser-32', topic: 'series', difficulty: 2,
+      id: 'ser-32', topic: 'series', difficulty: 2, concepts: ['ser.taylor'],
       stem: '將 $\\ln x$ 在 $x=1$ 展開成 $a_0+a_1(x-1)+a_2(x-1)^2+\\cdots$，求 $(a_0,a_1,a_2)$。',
       choices: [{ tex: '(0,1,-1)', value: [0,1,-1] }, { tex: '(0,1,\\frac12)', value: [0,1,1/2] }, { tex: '(1,1,-\\frac12)', value: [1,1,-1/2] }, { tex: '(0,1,-\\frac12)', value: [0,1,-1/2] }],
       answer: 3,
@@ -314,7 +314,7 @@
       check: N => [Math.log(1), N.diff(Math.log, 1), N.diff(x => N.diff(Math.log, x), 1)/2]
     },
     {
-      id: 'ser-33', topic: 'series', difficulty: 2,
+      id: 'ser-33', topic: 'series', difficulty: 2, concepts: ['ser.taylor', 'ser.geometric'],
       stem: '$\\ln(1+x)$ 的麥克勞林展開，保留到三次項的多項式是哪個？',
       choices: [{ tex: 'x-\\frac{x^2}2+\\frac{x^3}3', value: x => x-x*x/2+x**3/3 }, { tex: 'x+\\frac{x^2}2+\\frac{x^3}3', value: x => x+x*x/2+x**3/3 }, { tex: 'x-\\frac{x^2}2+\\frac{x^3}6', value: x => x-x*x/2+x**3/6 }, { tex: '1+x-\\frac{x^2}2+\\frac{x^3}3', value: x => 1+x-x*x/2+x**3/3 }],
       answer: 0,
@@ -327,7 +327,7 @@
       }
     },
     {
-      id: 'ser-34', topic: 'series', difficulty: 2,
+      id: 'ser-34', topic: 'series', difficulty: 2, concepts: ['ser.approx'],
       stem: '以 $f(x)=\\sqrt{1+x}$ 在零點的二次泰勒多項式近似 $\\sqrt{1.04}$，結果為何？',
       choices: [{ tex: '1.02', value: 1.02 }, { tex: '1.0198', value: 1.0198 }, { tex: '1.0202', value: 1.0202 }, { tex: '1.0392', value: 1.0392 }],
       answer: 1,
@@ -338,7 +338,7 @@
       }
     },
     {
-      id: 'ser-35', topic: 'series', difficulty: 2,
+      id: 'ser-35', topic: 'series', difficulty: 2, concepts: ['ser.taylor'],
       stem: '把 $x=1/2$ 代入對數展開，求 $\\sum_{n=1}^{\\infty}\\frac{(-1)^{n+1}}{n2^n}$。',
       choices: [{ tex: '\\ln2', value: Math.log(2) }, { tex: '-\\ln\\frac32', value: -Math.log(3/2) }, { tex: '\\ln\\frac32', value: Math.log(3/2) }, { tex: '\\frac12', value: 1/2 }],
       answer: 2,
@@ -346,7 +346,7 @@
       check: N => N.sum(n => (-1)**(n+1)/(n*2**n), 1, 80)
     },
     {
-      id: 'ser-36', topic: 'series', difficulty: 2,
+      id: 'ser-36', topic: 'series', difficulty: 2, concepts: ['ser.alternating'],
       stem: '用交錯級數的「下一項」誤差上界估計 $\\ln2=1-1/2+1/3-\\cdots$，至少取前幾項才能讓該上界嚴格小於 $0.01$？',
       choices: [{ tex: '99', value: 99 }, { tex: '10', value: 10 }, { tex: '101', value: 101 }, { tex: '100', value: 100 }],
       answer: 3,
@@ -359,7 +359,7 @@
       }
     },
     {
-      id: 'ser-37', topic: 'series', difficulty: 2,
+      id: 'ser-37', topic: 'series', difficulty: 2, concepts: ['ser.tests'],
       stem: '對遞減正函數 $f(x)=x^{-2}$，積分估計給出 $\\sum_{n=11}^{\\infty}1/n^2\\le\\int_{10}^{\\infty}x^{-2}\\,dx$；右側上界是多少？',
       choices: [{ tex: '\\frac1{10}', value: 1/10 }, { tex: '\\frac1{11}', value: 1/11 }, { tex: '\\frac1{100}', value: 1/100 }, { tex: '10', value: 10 }],
       answer: 0,
@@ -367,7 +367,7 @@
       check: N => N.improper(x => x**(-2), 10, Infinity)
     },
     {
-      id: 'ser-38', topic: 'series', difficulty: 3,
+      id: 'ser-38', topic: 'series', difficulty: 3, concepts: ['ser.radius'],
       stem: '中心不在零點：$\\sum_{n=1}^{\\infty}\\frac{(x-2)^n}{n^2 3^n}$ 的完整收斂區間為何？',
       choices: [{ tex: '(-1,5)', value: '(-1,5)' }, { tex: '[-1,5]', value: '[-1,5]' }, { tex: '[-3,3]', value: '[-3,3]' }, { tex: '[-1,5)', value: '[-1,5)' }],
       answer: 1,
@@ -389,7 +389,7 @@
       }
     },
     {
-      id: 'ser-39', topic: 'series', difficulty: 3,
+      id: 'ser-39', topic: 'series', difficulty: 3, concepts: ['ser.radius', 'ser.alternating'],
       stem: '含交錯係數與平移的 $\\sum_{n=1}^{\\infty}\\frac{(-1)^n(x+1)^n}{n2^n}$，收斂區間是哪個？',
       choices: [{ tex: '[-3,1)', value: '[-3,1)' }, { tex: '[-3,1]', value: '[-3,1]' }, { tex: '(-3,1]', value: '(-3,1]' }, { tex: '(-2,2]', value: '(-2,2]' }],
       answer: 2,
@@ -411,7 +411,7 @@
       }
     },
     {
-      id: 'ser-40', topic: 'series', difficulty: 3,
+      id: 'ser-40', topic: 'series', difficulty: 3, concepts: ['ser.radius'],
       stem: '階乘在分母的冪級數 $\\sum_{n=0}^{\\infty}x^n/n!$，收斂半徑 $R$ 是多少？',
       choices: [{ tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: 'e', value: Math.E }, { tex: '\\infty', value: '+inf' }],
       answer: 3,
@@ -430,7 +430,7 @@
       }
     },
     {
-      id: 'ser-41', topic: 'series', difficulty: 3,
+      id: 'ser-41', topic: 'series', difficulty: 3, concepts: ['ser.radius'],
       stem: '階乘改在分子的 $\\sum_{n=0}^{\\infty}n!x^n$，其收斂半徑為何？',
       choices: [{ tex: '0', value: 0 }, { tex: '1', value: 1 }, { tex: '\\infty', value: '+inf' }, { tex: 'e^{-1}', value: 1/Math.E }],
       answer: 0,
@@ -449,7 +449,7 @@
       }
     },
     {
-      id: 'ser-42', topic: 'series', difficulty: 3,
+      id: 'ser-42', topic: 'series', difficulty: 3, concepts: ['ser.taylor'],
       stem: '複合函數 $\\cos(x^2)$ 的麥克勞林級數中，$x^4$ 的係數是多少？',
       choices: [{ tex: '-\\frac1{24}', value: -1/24 }, { tex: '-\\frac12', value: -1/2 }, { tex: '\\frac12', value: 1/2 }, { tex: '0', value: 0 }],
       answer: 1,
@@ -464,7 +464,7 @@
       }
     },
     {
-      id: 'ser-43', topic: 'series', difficulty: 3,
+      id: 'ser-43', topic: 'series', difficulty: 3, concepts: ['ser.taylor'],
       stem: '$x^2e^{-x}$ 在零點展開時，$x^5$ 項的係數為何？',
       choices: [{ tex: '\\frac16', value: 1/6 }, { tex: '-\\frac1{120}', value: -1/120 }, { tex: '-\\frac16', value: -1/6 }, { tex: '-1', value: -1 }],
       answer: 2,
@@ -481,7 +481,7 @@
       }
     },
     {
-      id: 'ser-44', topic: 'series', difficulty: 3,
+      id: 'ser-44', topic: 'series', difficulty: 3, concepts: ['ser.taylor'],
       stem: '乘積 $e^x\\sin x$ 的麥克勞林展開中，三次項的係數是多少？',
       choices: [{ tex: '\\frac12', value: 1/2 }, { tex: '-\\frac16', value: -1/6 }, { tex: '\\frac23', value: 2/3 }, { tex: '\\frac13', value: 1/3 }],
       answer: 3,
@@ -492,7 +492,7 @@
       }
     },
     {
-      id: 'ser-45', topic: 'series', difficulty: 3,
+      id: 'ser-45', topic: 'series', difficulty: 3, concepts: ['ser.approx'],
       stem: '取 $\\sin x$ 的三次麥克勞林多項式，在 $x=0.3$ 時得到的近似值是多少？',
       choices: [{ tex: '0.2955', value: 0.2955 }, { tex: '0.3045', value: 0.3045 }, { tex: '0.273', value: 0.273 }, { tex: '0.3', value: 0.3 }],
       answer: 0,
@@ -504,7 +504,7 @@
       }
     },
     {
-      id: 'ser-46', topic: 'series', difficulty: 3,
+      id: 'ser-46', topic: 'series', difficulty: 3, concepts: ['ser.approx'],
       stem: '用 $f(x)=1/x$ 在 $x=2$ 的二次泰勒多項式估計 $1/2.1$，結果是哪個？',
       choices: [{ tex: '0.475', value: 0.475 }, { tex: '0.47625', value: 0.47625 }, { tex: '0.52625', value: 0.52625 }, { tex: '0.4775', value: 0.4775 }],
       answer: 1,
@@ -515,7 +515,7 @@
       }
     },
     {
-      id: 'ser-47', topic: 'series', difficulty: 3,
+      id: 'ser-47', topic: 'series', difficulty: 3, concepts: ['ser.geometric'],
       stem: '將等比級數微分兩次後，可求出 $\\sum_{n=2}^{\\infty}n(n-1)/3^n$ 的和為何？',
       choices: [{ tex: '\\frac94', value: 9/4 }, { tex: '\\frac38', value: 3/8 }, { tex: '\\frac34', value: 3/4 }, { tex: '\\frac32', value: 3/2 }],
       answer: 2,
@@ -523,7 +523,7 @@
       check: N => N.sum(n => n*(n-1)/3**n, 2, 100)
     },
     {
-      id: 'ser-48', topic: 'series', difficulty: 3,
+      id: 'ser-48', topic: 'series', difficulty: 3, concepts: ['ser.taylor', 'ser.alternating'],
       stem: '由反正切的級數，求 $1-\\frac13+\\frac15-\\frac17+\\cdots$ 的和。',
       choices: [{ tex: '\\frac\\pi2', value: Math.PI/2 }, { tex: '\\ln2', value: Math.log(2) }, { tex: '-\\frac\\pi4', value: -Math.PI/4 }, { tex: '\\frac\\pi4', value: Math.PI/4 }],
       answer: 3,
@@ -531,7 +531,7 @@
       check: N => N.sum(n => (-1)**n/(2*n+1), 0, 200000)
     },
     {
-      id: 'ser-49', topic: 'series', difficulty: 3,
+      id: 'ser-49', topic: 'series', difficulty: 3, concepts: ['ser.taylor', 'ser.geometric'],
       stem: '將 $1/(1+x^2)$ 的等比展開逐項積分，得到 $\\arctan x=b_1x+b_3x^3+b_5x^5+\\cdots$；求 $(b_1,b_3,b_5)$。',
       choices: [{ tex: '(1,-\\frac13,\\frac15)', value: [1,-1/3,1/5] }, { tex: '(1,-1,1)', value: [1,-1,1] }, { tex: '(1,\\frac13,\\frac15)', value: [1,1/3,1/5] }, { tex: '(1,-\\frac16,\\frac1{120})', value: [1,-1/6,1/120] }],
       answer: 0,
@@ -550,7 +550,7 @@
       }
     },
     {
-      id: 'ser-50', topic: 'series', difficulty: 3,
+      id: 'ser-50', topic: 'series', difficulty: 3, concepts: ['ser.approx'],
       stem: '用 $e^x$ 的二次麥克勞林多項式估計 $e^{0.1}$。若三階導數上界取 $M=\\max_{[0,0.1]}e^x$，拉格朗日餘項上界 $M(0.1)^3/3!$ 為何？',
       choices: [{ tex: '\\frac{e^{0.1}}{2000}', value: Math.exp(0.1)/2000 }, { tex: '\\frac{e^{0.1}}{6000}', value: Math.exp(0.1)/6000 }, { tex: '\\frac1{6000}', value: 1/6000 }, { tex: '\\frac{e^{0.1}}{200}', value: Math.exp(0.1)/200 }],
       answer: 1,
