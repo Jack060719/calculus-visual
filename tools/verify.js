@@ -1,6 +1,7 @@
 'use strict';
 
 const questions = require('../data/questions.js');
+const concepts = require('../data/concepts.js');
 const topics = { limit: 'lim', derivative: 'der', 'derivative-app': 'dap', integral: 'int', 'integral-tech': 'itc', series: 'ser' };
 const close = (a, b) => Number.isFinite(a) && Number.isFinite(b) &&
   Math.abs(a-b) <= Math.max(1e-6, 1e-4*Math.max(Math.abs(a), Math.abs(b)));
@@ -245,6 +246,84 @@ function verifyQuestion(q) {
   return errors;
 }
 
+// 觀念清單本身的檢查：代號不可重複、主題要合法、名稱不可空白、六個主題都要有觀念。
+function verifyConceptList(list = concepts.list) {
+  const failures = [];
+  if (!Array.isArray(list)) return ['觀念清單必須是陣列'];
+  const seen = new Set();
+  list.forEach((concept, index) => {
+    // 先確認是物件，再讀欄位；任何欄位型別不對都只記錄錯誤，不會讓 verify 當掉
+    if (!concept || typeof concept !== 'object') {
+      failures.push('觀念清單第 '+(index+1)+' 筆：不是物件');
+      return;
+    }
+    const idOk = typeof concept.id === 'string' && /^[a-z]+\.[a-z]+$/.test(concept.id);
+    const where = '觀念清單 '+(typeof concept.id === 'string' ? concept.id : '第 '+(index+1)+' 筆（代號 '+JSON.stringify(concept.id)+'）');
+    if (!idOk) failures.push(where+'：代號格式不合法，必須是字串（例如 der.chain）');
+    else if (seen.has(concept.id)) failures.push(where+'：代號重複');
+    else seen.add(concept.id);
+    if (typeof concept.topic !== 'string' || !Object.hasOwn(topics, concept.topic)) failures.push(where+'：topic 不合法');
+    // 代號開頭和主題一致：只有代號格式正確、主題合法時才檢查（避免對非字串呼叫 split）
+    else if (idOk && concept.id.split('.')[0] !== topics[concept.topic]) failures.push(where+'：代號開頭應為 '+topics[concept.topic]+'.');
+    if (typeof concept.label !== 'string' || !concept.label.trim()) failures.push(where+'：缺少中文名稱');
+  });
+  Object.keys(topics).forEach(topic => {
+    if (!list.some(concept => concept && concept.topic === topic)) failures.push('觀念清單：'+topic+' 沒有任何觀念');
+  });
+  return failures;
+}
+
+// --selftest 用：故意做壞的觀念資料，每一筆都必須被抓到（而且不能讓 verify 當掉）。
+function conceptSelftest() {
+  const results = [];
+  const check = (name, fn) => {
+    let caught = false;
+    try { caught = fn().length > 0; }
+    catch (error) { console.error('觀念自我測試「'+name+'」當掉：'+error.message); }
+    if (!caught) console.error('觀念自我測試「'+name+'」沒有被抓到');
+    results.push(caught);
+  };
+  const q = { id: 'der-01', topic: 'derivative' };
+  // 單題標籤
+  check('空陣列', () => verifyConcepts(Object.assign({}, q, { concepts: [] })));
+  check('超過 2 個', () => verifyConcepts(Object.assign({}, q, { concepts: ['der.chain', 'der.basic', 'der.log'] })));
+  check('重複代號', () => verifyConcepts(Object.assign({}, q, { concepts: ['der.chain', 'der.chain'] })));
+  check('跨主題代號', () => verifyConcepts(Object.assign({}, q, { concepts: ['lim.sub'] })));
+  check('清單外代號', () => verifyConcepts(Object.assign({}, q, { concepts: ['xxx.yyy'] })));
+  check('不是陣列', () => verifyConcepts(Object.assign({}, q, { concepts: 'der.chain' })));
+  check('代號不是字串', () => verifyConcepts(Object.assign({}, q, { concepts: [123] })));
+  // 觀念清單本身
+  const good = concepts.list;
+  check('清單代號是數字', () => verifyConceptList(good.concat([{ id: 123, topic: 'limit', label: '測試' }])));
+  check('清單有 null', () => verifyConceptList(good.concat([null])));
+  check('清單代號重複', () => verifyConceptList(good.concat([Object.assign({}, good[0])])));
+  check('清單代號開頭與主題不符', () => verifyConceptList(good.concat([{ id: 'der.test', topic: 'limit', label: '測試' }])));
+  check('清單主題不合法', () => verifyConceptList(good.concat([{ id: 'lim.test', topic: 'calculus', label: '測試' }])));
+  check('清單缺中文名稱', () => verifyConceptList(good.concat([{ id: 'lim.test', topic: 'limit', label: ' ' }])));
+  check('清單少了某個主題', () => verifyConceptList(good.filter(c => c.topic !== 'series')));
+  check('清單不是陣列', () => verifyConceptList('lim.sub'));
+  // 正確的資料不能誤報
+  const falseAlarm = verifyConcepts(Object.assign({}, q, { concepts: ['der.chain', 'der.basic'] })).length + verifyConceptList(good).length;
+  if (falseAlarm) console.error('觀念自我測試：正確的資料被誤報');
+  return { caught: results.filter(Boolean).length, total: results.length, falseAlarm };
+}
+
+// 單題的觀念標籤檢查。沒有 concepts 欄位＝還沒標，不算錯（要全部標完才檢查時用 --strict-concepts）。
+function verifyConcepts(q, byId = concepts.byId) {
+  if (q.concepts === undefined) return [];
+  const errors = [];
+  if (!Array.isArray(q.concepts) || q.concepts.length < 1 || q.concepts.length > 2) {
+    return ['concepts 必須是 1～2 個觀念代號的陣列'];
+  }
+  if (new Set(q.concepts).size !== q.concepts.length) errors.push('concepts 代號重複');
+  q.concepts.forEach(id => {
+    const concept = Object.hasOwn(byId, id) ? byId[id] : null;
+    if (!concept) errors.push('觀念代號不在清單內：'+id);
+    else if (concept.topic !== q.topic) errors.push('觀念 '+id+' 不屬於主題 '+q.topic);
+  });
+  return errors;
+}
+
 function verifyBank(bank, selectedTopics = Object.keys(topics), noCount = false) {
   const failures = [];
   const seen = new Set();
@@ -252,7 +331,7 @@ function verifyBank(bank, selectedTopics = Object.keys(topics), noCount = false)
   const counts = {};
   selectedTopics.forEach(topic => { counts[topic] = [0, 0, 0]; });
   bank.forEach(q => {
-    const errors = verifyQuestion(q);
+    const errors = verifyQuestion(q).concat(verifyConcepts(q));
     if (seen.has(q.id)) errors.push('id 重複');
     seen.add(q.id);
     const normalized = typeof q.stem === 'string' ? q.stem.replace(/\s/g, '').replace(/\d+/g, '#') : '';
@@ -279,16 +358,24 @@ function main(args) {
       const topic = args[++i];
       if (!Object.hasOwn(topics, topic)) throw new Error('--topic 必須為 '+Object.keys(topics).join('、'));
       selectedTopics = [topic];
-    } else if (!['--no-count', '--selftest'].includes(args[i])) throw new Error('未知參數：'+args[i]);
+    } else if (!['--no-count', '--selftest', '--strict-concepts'].includes(args[i])) throw new Error('未知參數：'+args[i]);
   }
   const bank = questions.filter(q => selectedTopics.includes(q.topic) || selectedTopics.length === Object.keys(topics).length);
   const { failures, counts } = verifyBank(bank, selectedTopics, args.includes('--no-count'));
+  failures.push(...verifyConceptList());
+  // 觀念標籤覆蓋率：沒標的題目先不算失敗，題庫組全部標完後改用 --strict-concepts 檢查。
+  const untagged = bank.filter(q => q.concepts === undefined);
+  if (args.includes('--strict-concepts')) {
+    untagged.forEach(q => failures.push(q.id+'：缺少觀念標籤 concepts'));
+  }
   if (failures.length) {
     failures.forEach(failure => console.error(failure));
     process.exitCode = 1;
   } else {
     selectedTopics.forEach(topic => console.log(topic+'：'+counts[topic].reduce((a, b) => a+b, 0)+' 題'));
     console.log('全部 '+bank.length+' 題驗證通過');
+    console.log('觀念標籤：已標 '+(bank.length-untagged.length)+' / '+bank.length+' 題'+
+      (untagged.length ? '（未標的題目不影響驗證；全部標完後可加 --strict-concepts 檢查）' : ''));
   }
   if (args.includes('--selftest')) {
     let caught = 0;
@@ -301,10 +388,13 @@ function main(args) {
     });
     console.log('抓到 '+caught+' / '+bank.length);
     if (caught !== bank.length) process.exitCode = 1;
+    const conceptResult = conceptSelftest();
+    console.log('觀念檢查：抓到 '+conceptResult.caught+' / '+conceptResult.total);
+    if (conceptResult.caught !== conceptResult.total || conceptResult.falseAlarm) process.exitCode = 1;
   }
 }
 
-module.exports = { N, verifyQuestion, verifyBank };
+module.exports = { N, verifyQuestion, verifyBank, verifyConcepts, verifyConceptList };
 if (require.main === module) {
   try { main(process.argv.slice(2)); }
   catch (error) { console.error(error.message); process.exitCode = 1; }

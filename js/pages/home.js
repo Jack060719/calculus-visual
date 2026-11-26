@@ -1,4 +1,45 @@
 (function () {
+  // 首頁的「我的學習」卡片（T15）：錯題幾題、連續幾天，以及錯題本、學習診斷的入口。
+  // 數字都用 textContent 放進去。
+  function studyCard() {
+    var wrong = Calc.progress.wrongCount();
+    var streak = Calc.progress.streak();
+    var card = document.createElement('section');
+    card.className = 'card study';
+    card.setAttribute('aria-label', '我的學習');
+    var stats = document.createElement('div');
+    stats.className = 'study-stats';
+    [
+      { label: '錯題', value: wrong, unit: '題' },
+      { label: '連續練習', value: streak, unit: '天' }
+    ].forEach(function (item) {
+      var stat = document.createElement('p');
+      stat.className = 'study-stat';
+      var name = document.createElement('span');
+      name.textContent = item.label;
+      var number = document.createElement('strong');
+      number.textContent = String(item.value);
+      var unit = document.createElement('span');
+      unit.textContent = item.unit;
+      stat.append(name, number, unit);
+      stats.appendChild(stat);
+    });
+    var links = document.createElement('div');
+    links.className = 'study-links';
+    [
+      { text: '錯題本', href: '#review', primary: wrong > 0 },
+      { text: '學習診斷', href: '#progress', primary: false }
+    ].forEach(function (item) {
+      var a = document.createElement('a');
+      a.className = 'btn ' + (item.primary ? 'primary' : 'ghost');
+      a.href = item.href;
+      a.textContent = item.text;
+      links.appendChild(a);
+    });
+    card.append(stats, links);
+    return card;
+  }
+
   Calc.pages.home = {
     mount: function (el) {
       el.innerHTML = '<header class="hero">' +
@@ -30,6 +71,8 @@
         '<button class="btn ghost" type="submit">加入</button></div>' +
         '<div class="room-error" id="challenge-code-error" role="status" aria-live="polite"></div></form></article></div>' +
         '<p class="footnote">「連結挑戰」會在單人練習結算後產生。</p>';
+
+      el.querySelector('.hero').after(studyCard());
 
       var nameInput = el.querySelector('#name');
       nameInput.value = String(Calc.store.get('name', '')).slice(0, 12);

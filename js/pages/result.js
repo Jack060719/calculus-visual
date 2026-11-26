@@ -30,12 +30,77 @@
     return cell;
   }
 
+  // 把這一局寫進錯題本與學習進度（T12）。三種玩法和錯題重練都從這裡寫入，只有這一個寫入點。
+  // options.gameId 是一局的識別碼：同一局就算重畫結算頁，progress.record 也只會記一次。
+  // 回傳本局的結果（答錯幾題、新加入幾題、掌握了哪些題），沒有 gameId 時回傳 null。
+  function recordProgress(options) {
+    if (!options.gameId || !Calc.progress) return null;
+    try {
+      return Calc.progress.record({ id: options.gameId, mode: options.mode, summary: options.me.summary });
+    } catch (error) {
+      // 進度資料出問題時，結算頁照常顯示
+      return null;
+    }
+  }
+
+  // 錯題重練的結算提示：本局掌握了幾題、錯題本還剩幾題（T13）
+  // 報讀器（VoiceOver、TalkBack）只會念出 live region「後來變動」的內容：
+  // 所以先放一個空的 role=status 區塊，等結算卡放進畫面後的下一個 frame 再填文字（審查 PR #4 第 3 點）。
+  // lines 是 [{ text, main }]，main 為 true 的那行用粗體強調。
+  function liveNote(note, lines) {
+    var status = node('div', 'result-progress-text');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    note.appendChild(status);
+    window.requestAnimationFrame(function () {
+      lines.forEach(function (line) {
+        status.appendChild(node('p', line.main ? 'result-progress-main' : '', line.text));
+      });
+    });
+    return status;
+  }
+
+  function reviewNote(outcome) {
+    var note = node('div', 'result-progress');
+    var left = Calc.progress.wrongCount();
+    liveNote(note, [
+      { main: true, text: outcome.mastered.length ? '✓ 本局 ' + outcome.mastered.length + ' 題已掌握，移出錯題本' : '同一題在重練中連續答對 2 次就能掌握' },
+      { text: left ? '錯題本還有 ' + left + ' 題' : '錯題本清空了，太厲害了！' }
+    ]);
+    return note;
+  }
+
+  // 單人、挑戰、PK 的結算提示（T15）：「本局新增 X 題到錯題本」＋「去重練」按鈕
+  // X 只算這一局「新加進」錯題本的題（outcome.added）；
+  // 原本就在錯題本裡、這局又答錯的題，只把錯誤次數加一，不算進 X（審查 PR #6 第 1 點）。
+  function wrongNote(outcome) {
+    var note = node('div', 'result-progress');
+    if (!outcome.wrong) {
+      liveNote(note, [{ main: true, text: '✓ 全部答對，沒有新的錯題' }]);
+      return note;
+    }
+    var lines = [{ main: true, text: '本局新增 ' + outcome.added + ' 題到錯題本' }];
+    var again = outcome.wrong - outcome.added;   // 原本就在錯題本、這局又錯的題數
+    if (again > 0) lines.push({ text: '另有 ' + again + ' 題原本就在錯題本，錯誤次數加一' });
+    lines.push({ text: '錯題本共 ' + Calc.progress.wrongCount() + ' 題，趁記憶還新，馬上重練一次吧。' });
+    // 文字放在 role=status 區塊裡、先空著再填（審查 PR #6 第 2 點）；按鈕放在區塊外面，不會被當成通知念出來
+    liveNote(note, lines);
+    var button = node('button', 'btn ghost', '去重練');
+    button.type = 'button';
+    button.addEventListener('click', function () { Calc.router.go('#review/play'); });
+    note.appendChild(button);
+    return note;
+  }
+
   async function render(el, options) {
     var me = options.me;
     var opp = options.opp;
     var summary = me.summary;
+    // 結算時寫入進度；outcome 之後在結算頁顯示「本局 X 題加入錯題本」
+    var outcome = recordProgress(options);
     var card = node('article', 'card result-card');
-    card.appendChild(node('span', 'badge', Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[options.difficulty === undefined ? 'mixed' : options.difficulty]));
+    // options.badge 可以自訂上方小標（例如錯題重練）；沒有的話顯示主題・難度
+    card.appendChild(node('span', 'badge', options.badge || Calc.quiz.LABELS[options.topic] + '・' + Calc.quiz.DIFFICULTY_LABELS[options.difficulty === undefined ? 'mixed' : options.difficulty]));
     card.appendChild(node('h1', '', '這一局的收穫'));
     var verdict = node('div', 'result-verdict');
     verdict.setAttribute('role', 'status');
@@ -51,6 +116,8 @@
     card.appendChild(players);
     var correct = typeof summary.correct === 'number' ? summary.correct : summary.perQ.filter(function (value) { return value > 0; }).length;
     card.appendChild(node('p', '', '答對 ' + correct + ' / ' + summary.perQ.length + ' 題'));
+    if (options.mode === 'review' && outcome) card.appendChild(reviewNote(outcome));
+    else if (outcome) card.appendChild(wrongNote(outcome));
     var list = node('ol', 'result-list');
     summary.perQ.forEach(function (value, index) {
       var item = node('li', 'result-item');
