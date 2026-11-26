@@ -70,7 +70,9 @@
     return note;
   }
 
-  // 單人、挑戰、PK 的結算提示（T15）：「本局 X 題加入錯題本」＋「去重練」按鈕
+  // 單人、挑戰、PK 的結算提示（T15）：「本局新增 X 題到錯題本」＋「去重練」按鈕
+  // X 只算這一局「新加進」錯題本的題（outcome.added）；
+  // 原本就在錯題本裡、這局又答錯的題，只把錯誤次數加一，不算進 X（審查 PR #6 第 1 點）。
   function wrongNote(outcome) {
     var note = node('div', 'result-progress');
     note.setAttribute('role', 'status');
@@ -78,7 +80,9 @@
       note.appendChild(node('p', 'result-progress-main', '✓ 全部答對，沒有新的錯題'));
       return note;
     }
-    note.appendChild(node('p', 'result-progress-main', '本局 ' + outcome.wrong + ' 題加入錯題本'));
+    note.appendChild(node('p', 'result-progress-main', '本局新增 ' + outcome.added + ' 題到錯題本'));
+    var again = outcome.wrong - outcome.added;   // 原本就在錯題本、這局又錯的題數
+    if (again > 0) note.appendChild(node('p', '', '另有 ' + again + ' 題原本就在錯題本，錯誤次數加一'));
     note.appendChild(node('p', '', '錯題本共 ' + Calc.progress.wrongCount() + ' 題，趁記憶還新，馬上重練一次吧。'));
     var button = node('button', 'btn ghost', '去重練');
     button.type = 'button';

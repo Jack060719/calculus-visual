@@ -306,4 +306,22 @@ test('重練的作答不會讓主題達到「最低」的門檻', () => {
   assert.equal(p.weakestTopic(), null);
 });
 
+test('本局新增到錯題本的題數：原本就在錯題本的題只加錯誤次數，不算新增（審查 PR #6）', () => {
+  const { p } = setup();
+  p.record({ id: 'g1', mode: 'solo', summary: summaryOf(['lim-01', 'lim-02'], [false, false]) });
+  // 這局錯 3 題：lim-01、lim-02 原本就在錯題本，der-01 是新的
+  const r = p.record({ id: 'g2', mode: 'pk', summary: summaryOf(['lim-01', 'lim-02', 'der-01', 'der-02'], [false, false, false, true]) });
+  assert.equal(r.wrong, 3, '本局答錯 3 題');
+  assert.equal(r.added, 1, '只有 der-01 是新增的');
+  assert.equal(p.load().wrong['lim-01'].times, 2, '舊題錯誤次數加一');
+  assert.equal(p.load().wrong['der-01'].times, 1);
+  assert.equal(p.wrongCount(), 3, '錯題本 2 + 1 = 3 題');
+  // 全部都是舊題：新增 0 題
+  const again = p.record({ id: 'g3', mode: 'challenge', summary: summaryOf(['lim-01', 'der-01'], [false, null]) });
+  assert.deepEqual([again.wrong, again.added], [2, 0]);
+  assert.equal(p.wrongCount(), 3);
+  // 重複記錄同一局：不新增
+  assert.equal(p.record({ id: 'g3', mode: 'challenge', summary: summaryOf(['der-02'], [false]) }).added, 0);
+});
+
 console.log(passed + ' 項測試通過' + (process.exitCode ? '，有測試失敗' : ''));
